@@ -1,0 +1,414 @@
+{
+    "Recepta Biopharma": {
+        "Oswaldo Cruz": 1,
+        "Albert Einstein": 2
+    },
+    "Novartis Pharmaceuticals": {
+        "Albert Einstein": 1,
+        "Oswaldo Cruz": 1,
+        "A.C. Camargo": 1
+    },
+    "Janssen-Cilag Farmaceutica Ltda.": {
+        "S\u00edrio Liban\u00eas": 1
+    },
+    "Immix Biopharma, Inc.": {
+        "Rio Preto": 1
+    },
+    "Eisai Inc.": {
+        "S\u00edrio Liban\u00eas": 1,
+        "Ijui": 1,
+        "Ara\u00fajo Jorge": 2
+    },
+    "AstraZeneca": {
+        "Ara\u00fajo Jorge": 2,
+        "Ijui": 1,
+        "Rio Preto": 2
+    },
+    "Janssen Research & Development, LLC": {
+        "S\u00edrio Liban\u00eas": 15,
+        "Ara\u00fajo Jorge": 8,
+        "A.C. Camargo": 12,
+        "Oswaldo Cruz": 5,
+        "Rio Preto": 9,
+        "Albert Einstein": 5,
+        "Ijui": 1,
+        "M\u00e3e de Deus": 1,
+        "HCPA": 1
+    },
+    "Pfizer": {
+        "Ijui": 10,
+        "A.C. Camargo": 6,
+        "M\u00e3e de Deus": 18,
+        "Oswaldo Cruz": 5,
+        "Rio Preto": 13,
+        "Albert Einstein": 7,
+        "S\u00edrio Liban\u00eas": 7,
+        "Unicamp": 4,
+        "Ara\u00fajo Jorge": 2,
+        "HCPA": 4
+    },
+    "Daiichi Sankyo, Inc.": {
+        "M\u00e3e de Deus": 1,
+        "S\u00edrio Liban\u00eas": 2,
+        "Rio Preto": 2,
+        "Unicamp": 1
+    },
+    "Bristol-Myers Squibb": {
+        "Ara\u00fajo Jorge": 2,
+        "M\u00e3e de Deus": 3
+    },
+    "Hoffmann-La Roche": {
+        "Ara\u00fajo Jorge": 20,
+        "HCPA": 1,
+        "Ijui": 13,
+        "M\u00e3e de Deus": 9,
+        "Rio Preto": 16,
+        "S\u00edrio Liban\u00eas": 9,
+        "Oswaldo Cruz": 11,
+        "A.C. Camargo": 1,
+        "Unicamp": 6
+    },
+    "Morphotek": {
+        "Ara\u00fajo Jorge": 1,
+        "Ijui": 1
+    },
+    "Eli Lilly and Company": {
+        "Albert Einstein": 1,
+        "Ara\u00fajo Jorge": 2,
+        "Ijui": 5,
+        "Rio Preto": 4,
+        "S\u00edrio Liban\u00eas": 6,
+        "M\u00e3e de Deus": 1,
+        "A.C. Camargo": 3,
+        "Oswaldo Cruz": 1,
+        "Unicamp": 2
+    },
+    "Merck Sharp & Dohme LLC": {
+        "Ara\u00fajo Jorge": 5,
+        "Ijui": 12,
+        "Rio Preto": 14,
+        "A.C. Camargo": 12,
+        "Oswaldo Cruz": 3,
+        "Albert Einstein": 1,
+        "S\u00edrio Liban\u00eas": 1,
+        "M\u00e3e de Deus": 1
+    },
+    "Amgen": {
+        "S\u00edrio Liban\u00eas": 6,
+        "M\u00e3e de Deus": 1,
+        "Rio Preto": 5,
+        "Ijui": 1,
+        "Albert Einstein": 1,
+        "A.C. Camargo": 1,
+        "Unicamp": 1
+    },
+    "Genentech, Inc.": {
+        "Ijui": 1,
+        "HCPA": 2,
+        "Rio Preto": 4,
+        "M\u00e3e de Deus": 1,
+        "Oswaldo Cruz": 2,
+        "Unicamp": 1
+    },
+    "Seagen Inc.": {
+        "Ara\u00fajo Jorge": 1,
+        "Rio Preto": 1,
+        "A.C. Camargo": 2,
+        "M\u00e3e de Deus": 1,
+        "Ijui": 1
+    },
+    "AbbVie": {
+        "Ijui": 2,
+        "Rio Preto": 2,
+        "A.C. Camargo": 4,
+        "Albert Einstein": 4,
+        "M\u00e3e de Deus": 1
+    },
+    "EMD Serono Research & Development Institute, Inc.": {
+        "M\u00e3e de Deus": 5,
+        "A.C. Camargo": 1,
+        "Ijui": 3,
+        "Rio Preto": 5,
+        "Oswaldo Cruz": 1
+    },
+    "Eurofarma Laboratorios S.A.": {
+        "Rio Preto": 1,
+        "Ijui": 1,
+        "Unicamp": 2,
+        "M\u00e3e de Deus": 1,
+        "Albert Einstein": 1
+    },
+    "Bayer": {
+        "Ara\u00fajo Jorge": 3,
+        "Ijui": 1,
+        "Rio Preto": 3,
+        "S\u00edrio Liban\u00eas": 2,
+        "M\u00e3e de Deus": 1,
+        "Albert Einstein": 2
+    },
+    "Gilead Sciences": {
+        "Ara\u00fajo Jorge": 2,
+        "HCPA": 3,
+        "Albert Einstein": 1,
+        "Rio Preto": 1,
+        "A.C. Camargo": 1
+    },
+    "Boehringer Ingelheim": {
+        "Ijui": 2,
+        "M\u00e3e de Deus": 1,
+        "Unicamp": 1
+    },
+    "Agenus Inc.": {
+        "Albert Einstein": 1,
+        "Ijui": 2,
+        "M\u00e3e de Deus": 2,
+        "A.C. Camargo": 3,
+        "Rio Preto": 1,
+        "S\u00edrio Liban\u00eas": 1
+    },
+    "EMD Serono": {
+        "Ijui": 1
+    },
+    "Loxo Oncology, Inc.": {
+        "S\u00edrio Liban\u00eas": 2,
+        "M\u00e3e de Deus": 2,
+        "Unicamp": 2,
+        "Rio Preto": 1
+    },
+    "Spectrum Pharmaceuticals, Inc": {
+        "Ijui": 1
+    },
+    "Sesen Bio, Inc.": {
+        "Ara\u00fajo Jorge": 1
+    },
+    "Tolmar Inc.": {
+        "Ara\u00fajo Jorge": 1
+    },
+    "Incyte Corporation": {
+        "M\u00e3e de Deus": 4,
+        "Rio Preto": 4
+    },
+    "Taiho Oncology, Inc.": {
+        "A.C. Camargo": 2,
+        "Albert Einstein": 1,
+        "Rio Preto": 1
+    },
+    "OSI Pharmaceuticals": {
+        "Albert Einstein": 1
+    },
+    "PharmaMar": {
+        "Ijui": 1
+    },
+    "Myovant Sciences GmbH": {
+        "Ijui": 1,
+        "Rio Preto": 1
+    },
+    "Ipsen": {
+        "Ijui": 2,
+        "M\u00e3e de Deus": 1,
+        "Rio Preto": 2,
+        "Oswaldo Cruz": 1
+    },
+    "Arcus Biosciences, Inc.": {
+        "Ijui": 1,
+        "Rio Preto": 1
+    },
+    "Polyphor Ltd.": {
+        "Rio Preto": 1
+    },
+    "Aragon Pharmaceuticals, Inc.": {
+        "A.C. Camargo": 1
+    },
+    "Celgene": {
+        "Albert Einstein": 3,
+        "S\u00edrio Liban\u00eas": 2,
+        "A.C. Camargo": 2,
+        "M\u00e3e de Deus": 1
+    },
+    "Genmab": {
+        "Ara\u00fajo Jorge": 1
+    },
+    "Puma Biotechnology, Inc.": {
+        "Ara\u00fajo Jorge": 1,
+        "Rio Preto": 1,
+        "Ijui": 1,
+        "Albert Einstein": 1
+    },
+    "Novartis": {
+        "Unicamp": 1
+    },
+    "Nereus Pharmaceuticals, Inc.": {
+        "Ijui": 1
+    },
+    "Sumitomo Pharma Oncology, Inc.": {
+        "Rio Preto": 1
+    },
+    "Takeda": {
+        "HCPA": 5,
+        "Rio Preto": 3,
+        "Unicamp": 3,
+        "Albert Einstein": 4,
+        "Ijui": 1,
+        "M\u00e3e de Deus": 2,
+        "A.C. Camargo": 2,
+        "S\u00edrio Liban\u00eas": 1
+    },
+    "Threshold Pharmaceuticals": {
+        "Ara\u00fajo Jorge": 1,
+        "M\u00e3e de Deus": 1,
+        "Albert Einstein": 1
+    },
+    "Recombio SL": {
+        "HCPA": 2,
+        "Rio Preto": 2
+    },
+    "mAbxience Research S.L.": {
+        "Ijui": 2,
+        "Rio Preto": 1,
+        "A.C. Camargo": 1,
+        "Unicamp": 1
+    },
+    "Regeneron Pharmaceuticals": {
+        "Rio Preto": 1,
+        "A.C. Camargo": 1
+    },
+    "Janssen Pharmaceutica N.V., Belgium": {
+        "Oswaldo Cruz": 1,
+        "S\u00edrio Liban\u00eas": 1
+    },
+    "Telik": {
+        "A.C. Camargo": 1,
+        "Albert Einstein": 2
+    },
+    "BeiGene": {
+        "Ijui": 1,
+        "Rio Preto": 1,
+        "M\u00e3e de Deus": 1
+    },
+    "Jazz Pharmaceuticals": {
+        "Rio Preto": 1,
+        "Ijui": 1,
+        "HCPA": 1
+    },
+    "Debiopharm International SA": {
+        "Ijui": 1
+    },
+    "CanariaBio Inc.": {
+        "M\u00e3e de Deus": 1
+    },
+    "BioNTech SE": {
+        "Ijui": 1,
+        "M\u00e3e de Deus": 1,
+        "Rio Preto": 2
+    },
+    "Viracta Therapeutics, Inc.": {
+        "M\u00e3e de Deus": 1
+    },
+    "SciClone Pharmaceuticals": {
+        "Ijui": 1
+    },
+    "Helsinn Healthcare SA": {
+        "Ara\u00fajo Jorge": 1,
+        "Rio Preto": 1
+    },
+    "Brooklyn ImmunoTherapeutics, LLC": {
+        "Rio Preto": 1
+    },
+    "Celldex Therapeutics": {
+        "M\u00e3e de Deus": 1,
+        "Rio Preto": 1,
+        "Albert Einstein": 1
+    },
+    "Pierre Fabre Medicament": {
+        "M\u00e3e de Deus": 1
+    },
+    "Nektar Therapeutics": {
+        "Ijui": 1,
+        "M\u00e3e de Deus": 1,
+        "Unicamp": 1,
+        "Rio Preto": 1,
+        "Oswaldo Cruz": 1,
+        "A.C. Camargo": 1
+    },
+    "Gamida Cell ltd": {
+        "Albert Einstein": 1
+    },
+    "RayzeBio, Inc.": {
+        "A.C. Camargo": 1
+    },
+    "PTC Therapeutics": {
+        "Rio Preto": 2,
+        "Oswaldo Cruz": 1
+    },
+    "HUYABIO International, LLC.": {
+        "Rio Preto": 1
+    },
+    "Kronos Bio": {
+        "Rio Preto": 1
+    },
+    "Geron Corporation": {
+        "Albert Einstein": 1
+    },
+    "Millennium Pharmaceuticals, Inc.": {
+        "A.C. Camargo": 1,
+        "Unicamp": 1,
+        "Oswaldo Cruz": 1
+    },
+    "Basilea Pharmaceutica": {
+        "Rio Preto": 1
+    },
+    "Janssen-Cilag Ltd.": {
+        "A.C. Camargo": 1
+    },
+    "Kartos Therapeutics, Inc.": {
+        "Unicamp": 1,
+        "M\u00e3e de Deus": 1,
+        "A.C. Camargo": 1
+    },
+    "Agios Pharmaceuticals, Inc.": {
+        "HCPA": 1,
+        "Unicamp": 2
+    },
+    "Guerbet": {
+        "Albert Einstein": 1,
+        "Rio Preto": 1
+    },
+    "EOM Pharmaceuticals": {
+        "Oswaldo Cruz": 1
+    },
+    "Intercept Pharmaceuticals": {
+        "Unicamp": 2
+    },
+    "Apellis Pharmaceuticals, Inc.": {
+        "Oswaldo Cruz": 1
+    },
+    "Janssen Sciences Ireland UC": {
+        "Rio Preto": 1,
+        "S\u00edrio Liban\u00eas": 1,
+        "A.C. Camargo": 1
+    },
+    "Baxalta now part of Shire": {
+        "Unicamp": 1
+    },
+    "BioMarin Pharmaceutical": {
+        "Unicamp": 1
+    },
+    "Pfizer's Upjohn has merged with Mylan to form Viatris Inc.": {
+        "Unicamp": 1,
+        "Rio Preto": 1,
+        "Oswaldo Cruz": 1
+    },
+    "Janssen Vaccines & Prevention B.V.": {
+        "Oswaldo Cruz": 1
+    },
+    "Biogen": {
+        "Unicamp": 1,
+        "Rio Preto": 1
+    },
+    "ApoPharma": {
+        "HCPA": 1
+    },
+    "Abivax S.A.": {
+        "Unicamp": 2
+    }
+}
