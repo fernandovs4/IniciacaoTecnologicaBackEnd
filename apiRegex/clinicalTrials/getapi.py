@@ -14,7 +14,7 @@ def todos_hospitais(cache = False, farmas = False):
     cacheResults = {}
     url = "http://ClinicalTrials.gov/api/query/study_fields"
 
-    if cache and farmas:
+    if cache:
         with open("/home/fernando/WORKSPACE/IniciacaoTecnologica/SistemaWeb/api/apiRegex/clinicalTrials/farmas.json", "r") as file:
             return json.load(file)
 

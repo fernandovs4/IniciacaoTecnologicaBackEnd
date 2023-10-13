@@ -88,6 +88,7 @@ def filtra_por_data(datainicial, datafinal, estudo):
     return False
 
 def filtra_por_fase(fase, estudo):
+    print((estudo['Phase']))
     if len(estudo['Phase']) == 0:
         return False
     if fase == 'Todas':
@@ -119,7 +120,9 @@ def stdAge(estudo, adulto, idoso, crianca, todos):
         return True
     if idoso and estudo['StdAge'][0] == 'Older Adult' and len(estudo['StdAge']) == 1:
         return True
+    print("aaaaaaaaaaaaaaaaaaaaaaaaa")
     if crianca and estudo['StdAge'][0] == 'Child' and len(estudo['StdAge']) == 1:
+      
         return True
     return False
 
@@ -190,15 +193,14 @@ def minimunAge(estudo, idade_min):
 
 
       
-def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
-    
+def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdage=False):
+
     for estudo in dados:
-        
-        adiciona = True
         if data:
             if not filtra_por_data(data[0], data[1], estudo):
                 continue
         if fase:
+            print(estudo)
             if not filtra_por_fase(fase, estudo):
                 continue
         if idade_min:
@@ -236,7 +238,6 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
                 if not overalStatus(estudo, False, False, False, False, True, False, False, False, False):
                     continue
         if gender:
-           
             if gender == 'masculino':
                 if not Gender(estudo, True, False, False, False):
                     continue
@@ -249,17 +250,18 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
             elif gender == 'todos_generos':
                 if  not Gender(estudo, False, False,True,False):
                     continue
-        if stdAge:
-            if stdAge == 'adulto':
+        print(stdage)
+        if stdage:
+            if stdage == 'adulto':
                 if not stdAge(estudo, True, False, False, False):
                     continue
-            elif stdAge == 'idoso':
+            elif stdage == 'idoso':
                 if not stdAge(estudo, False, True, False, False):
                     continue
-            elif stdAge == 'crianca':
+            elif stdage == 'crianca':
                 if not stdAge(estudo, False, False, True, False):
                     continue
-            elif stdAge == 'todos':
+            elif stdage == 'todos':
                 if not stdAge(estudo, False, False, False, True):
                     continue
         dadosTabela['estudos'].append(estudo)
@@ -296,7 +298,7 @@ class ConstruirTabelaResource(Resource):
         datainicial = False
         datafinal = False
         fase = False
-        genderv = False
+        gender = False
         idade_min = False
         idade_max = False
         status = False
@@ -320,11 +322,11 @@ class ConstruirTabelaResource(Resource):
         if request.args.get('status') is not None:
             status = request.args['status']
         
-        if request.args.get('stdAge') is not None:
-            stdAge = request.args['stdAge']
+        if request.args.get('stdage') is not None:
+            stdAge = request.args['stdage']
         
         if request.args.get('gender') is not None:
-            genderv = request.args['gender']
+            gender = request.args['gender']
         
 
         if datainicial:
@@ -332,7 +334,7 @@ class ConstruirTabelaResource(Resource):
         else:
             data = False
         
-        tabela = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=genderv)
+        tabela = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
        
         return Response(json.dumps(tabela, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
@@ -352,7 +354,6 @@ class EstudosResource(Resource):
             if request.args['cache'] == 'true':
                 tabelaCache = open('/home/fernando/WORKSPACE/IniciacaoTecnologica/SistemaWeb/api/apiRegex/cacheTabela.json', 'r').read()
 
-                
                 tabelaCache = json.loads(tabelaCache)
                 
                 return Response(json.dumps(tabelaCache, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
