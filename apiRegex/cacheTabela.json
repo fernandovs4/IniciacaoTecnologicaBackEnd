@@ -27,8 +27,8 @@
     "Janssen Research & Development, LLC": {
         "S\u00edrio Liban\u00eas": 15,
         "Ara\u00fajo Jorge": 8,
-        "A.C. Camargo": 12,
-        "Oswaldo Cruz": 5,
+        "A.C. Camargo": 13,
+        "Oswaldo Cruz": 6,
         "Rio Preto": 9,
         "Albert Einstein": 5,
         "Ijui": 1,
@@ -59,7 +59,6 @@
     },
     "Hoffmann-La Roche": {
         "Ara\u00fajo Jorge": 20,
-        "HCPA": 1,
         "Ijui": 13,
         "M\u00e3e de Deus": 9,
         "Rio Preto": 16,
@@ -144,7 +143,7 @@
         "Rio Preto": 3,
         "S\u00edrio Liban\u00eas": 2,
         "M\u00e3e de Deus": 1,
-        "Albert Einstein": 2
+        "Albert Einstein": 1
     },
     "Gilead Sciences": {
         "Ara\u00fajo Jorge": 2,
@@ -191,7 +190,7 @@
     "Taiho Oncology, Inc.": {
         "A.C. Camargo": 2,
         "Albert Einstein": 1,
-        "Rio Preto": 1
+        "Rio Preto": 2
     },
     "OSI Pharmaceuticals": {
         "Albert Einstein": 1
@@ -211,7 +210,8 @@
     },
     "Arcus Biosciences, Inc.": {
         "Ijui": 1,
-        "Rio Preto": 1
+        "Rio Preto": 1,
+        "Albert Einstein": 1
     },
     "Polyphor Ltd.": {
         "Rio Preto": 1

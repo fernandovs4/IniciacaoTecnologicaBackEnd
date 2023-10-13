@@ -6,7 +6,7 @@ def todos_hospitais(cache = False, farmas = False):
     max_rank = 100
     query = {
         'expr' : 'cancer AND  AREA[LeadSponsorClass]Industry AND SEARCH[Location](AREA[LocationCountry]Brasil)',
-        'fields' : 'LeadSponsorClass,LeadSponsorName,LocationFacility, LocationCountry,StartDate, Condition,Phase',
+        'fields' : 'LeadSponsorClass,LeadSponsorName,LocationFacility,LocationCountry,OverallStatus,StdAge,StartDate,LocationZip,Gender,MaximumAge,MinimumAge,Condition,LocationState,WhyStopped,Phase',
         'fmt' : 'JSON',   
         'min_rnk' : min_rank,
         'max_rnk' : max_rank
