@@ -12,6 +12,7 @@ app = Flask(__name__)
 api = Api(app)
 
 CORS(app)
+i = 0
 def abre_hospital_json_r():
     with open("/home/fernando/WORKSPACE/IniciacaoTecnologica/SistemaWeb/api/apiRegex/hospitais.json", "r", encoding='utf-8') as apelidos_json:
                 apelidos_json = json.load(apelidos_json)
@@ -88,74 +89,59 @@ def filtra_por_data(datainicial, datafinal, estudo):
     return False
 
 def filtra_por_fase(fase, estudo):
-    print((estudo['Phase']))
-    if len(estudo['Phase']) == 0:
-        return False
-    if fase == 'Todas':
+    if fase == 'nao_especificado':
         return True
-    if fase == '1':
-        if estudo['Phase'][0] == 'Phase 1' and len(estudo['Phase']) == 1:
-            return True
-    if fase == '2':
-        if estudo['Phase'][0] == 'Phase 2' and len(estudo['Phase']) == 1 :
-            return True
-    if fase == '3':
-        if estudo['Phase'][0] == 'Phase 3' and len(estudo['Phase']) == 1:
-            return True
-    if fase == '4':
-        if estudo['Phase'][0] == 'Phase 4' and len(estudo['Phase']) == 1:
-            return True
-    if fase == 'Nao_especificada':
-        if estudo['Phase'] == []:
+    fase = fase.split(',')
+    fases_estudo = estudo['Phase']
+    fase_estudo_alterado = []
+    for f in fases_estudo:
+        fase_estudo_alterado.append(f.replace('Phase ', ''))
+    for f in fase:
+        if f in fase_estudo_alterado:
             return True
     return False
-
+  
 
 
 def stdAge(estudo, adulto, idoso, crianca, todos):
     if estudo['StdAge'] == []:
         if todos:
             return True
-    if adulto and estudo['StdAge'][0] == 'Adult' and len(estudo['StdAge']) == 1:
+    if adulto and crianca and (('Adult' in estudo['StdAge']  or 'Child' in estudo['StdAge']) and len(estudo['StdAge']) == 1 or( ('Adult' in estudo['StdAge']  and  'Child' in estudo['StdAge']) and len(estudo['StdAge']) == 2 )):
         return True
-    if idoso and estudo['StdAge'][0] == 'Older Adult' and len(estudo['StdAge']) == 1:
+    
+    if adulto and idoso and (('Older Adult' in estudo['StdAge']  or 'Adult' in estudo['StdAge']) and len(estudo['StdAge']) == 1 or( ('Older Adult' in estudo['StdAge']  and  'Adult' in estudo['StdAge']) and len(estudo['StdAge']) == 2 )):
         return True
-    print("aaaaaaaaaaaaaaaaaaaaaaaaa")
-    if crianca and estudo['StdAge'][0] == 'Child' and len(estudo['StdAge']) == 1:
-      
+    
+    if crianca and idoso and (('Older Adult' in estudo['StdAge']  or 'Child' in estudo['StdAge']) and len(estudo['StdAge']) == 1 or( ('Older Adult' in estudo['StdAge']  and  'Child' in estudo['StdAge']) and len(estudo['StdAge']) == 2 )):
         return True
-    return False
 
-def overalStatus(estudo, completo, terminado, recrutando, suspenso,cancelado, ativo, nao_iniciado, desconhecido, todos):
-    if estudo['OverallStatus'] == []:
-        if todos:
-            return True
-        else:
-            return False
+    if adulto and 'Adult' in estudo['StdAge'] and len(estudo['StdAge']) == 1:
+        return True
+    
+    if idoso and 'Older Adult' in estudo['StdAge'] and len(estudo['StdAge']) == 1:
+        return True
+    
+    if crianca and 'Child' in estudo['StdAge'] and len(estudo['StdAge']) == 1:
+        return True
     
     if todos:
         return True
-    if completo and estudo['OverallStatus'][0] == 'Completed':
-        return True
-    if terminado and estudo['OverallStatus'][0] == 'Terminated':
-        return True
-    if recrutando and estudo['OverallStatus'][0] == 'Recruiting':
-        return True
-    if suspenso and estudo['OverallStatus'][0] == 'Suspended':
-        return True
-    if ativo and estudo['OverallStatus'][0] == 'Active, not recruiting':
-        return True
-    if nao_iniciado and estudo['OverallStatus'][0] == 'Not yet recruiting':
-        return True
-    if desconhecido and estudo['OverallStatus'][0] == 'Unknown status':
-        return True
-    if cancelado and estudo['OverallStatus'][0] == 'Withdrawn':
-        return True
     return False
 
+def overalStatus(estudo, status):
+    status = [i.lower() for i in status.split(',')]
+
+    for st in status:
+        if len(estudo['OverallStatus']) == 1:
+            if estudo['OverallStatus'][0].lower() == st:
+                return True
+    if status == ['todos'] or status == []:
+        return True
+    return False
+    
 def Gender(estudo, masculino, feminino, todos, estudos_todos_generos):
     if estudo['Gender'] == []:
-        
         if todos:
             return True
         else:
@@ -168,7 +154,7 @@ def Gender(estudo, masculino, feminino, todos, estudos_todos_generos):
     
     if estudo['Gender'][0] == 'Female' and feminino:
         return True
-    print(estudo['Gender'])
+   
     if estudo['Gender'][0] == 'Male' and masculino:
         
 
@@ -194,49 +180,30 @@ def minimunAge(estudo, idade_min):
 
       
 def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdage=False):
-
+  
     for estudo in dados:
         if data:
             if not filtra_por_data(data[0], data[1], estudo):
                 continue
+            
         if fase:
-            print(estudo)
             if not filtra_por_fase(fase, estudo):
                 continue
+
         if idade_min:
             if not minimunAge(estudo, idade_min):
                 continue
+
         if idade_max:
             if not maximumAge(estudo, idade_max):
                 continue
+
         if status:
-            if status == 'Todos':
-                if not overalStatus(estudo, True, True, True, True, True, True, True, True, True):
+            # if status == 'Todos':
+            if not overalStatus(estudo,status):
                     continue
-            elif status.upper() == 'COMPLETO':
-                if not overalStatus(estudo, True, False, False, False, False, False, False, False, False):
-                    continue
-            elif status.upper() == 'TERMINADO':
-                if not overalStatus(estudo, False, True, False, False, False, False, False, False, False):
-                    continue
-            elif status.upper() == 'RECRUTANDO':
-                if not overalStatus(estudo, False, False, True, False, False, False, False, False, False):
-                    continue
-            elif status.upper() == 'SUSPENSO':
-                if not overalStatus(estudo, False, False, False, True, False, False, False, False, False):
-                    continue
-            elif status.upper() == 'ATIVO':
-                if not overalStatus(estudo, False, False, False, False, False, True, False, False, False):
-                    continue
-            elif status.upper() == 'NAO INICIADO':
-                if not overalStatus(estudo, False, False, False, False, False, False, True, False, False):
-                    continue
-            elif status.upper() == 'DESCONHECIDO':
-                if not overalStatus(estudo, False, False, False, False, False, False, False, True, False):
-                    continue
-            elif status.upper() == 'CANCELADO':
-                if not overalStatus(estudo, False, False, False, False, True, False, False, False, False):
-                    continue
+          
+
         if gender:
             if gender == 'masculino':
                 if not Gender(estudo, True, False, False, False):
@@ -250,8 +217,9 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
             elif gender == 'todos_generos':
                 if  not Gender(estudo, False, False,True,False):
                     continue
-        print(stdage)
+
         if stdage:
+        
             if stdage == 'adulto':
                 if not stdAge(estudo, True, False, False, False):
                     continue
@@ -264,19 +232,27 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
             elif stdage == 'todos':
                 if not stdAge(estudo, False, False, False, True):
                     continue
+            elif stdage == 'adulto_idoso' or stdage == 'idoso_adulto':
+                if not stdAge(estudo, True, True, False, False):
+                    continue
+            elif stdage == 'adulto_crianca' or stdage == 'crianca_adulto':
+                if not stdAge(estudo, True, False, True, False):
+                    continue
+            elif stdage == 'idoso_crianca' or stdage == 'crianca_idoso':
+                if not stdAge(estudo, False, True, True, False):
+                    continue
+
         dadosTabela['estudos'].append(estudo)
-        
-   
     return dadosTabela
 
         
                 
 
-def constroi_tabela(data = False,dataInicial=False,tipo=False, dataFinal =False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
+def constroi_tabela(data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
     dadosTabela = {'estudos':[]}
     dados = todos_hospitais(cache=True)
 
-    dadosTabela = filtraDados(dadosTabela, dados, data, fase, idade_min, idade_max,status, gender, stdAge)
+    dadosTabela = filtraDados(dadosTabela, dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
     return dadosTabela
 
 
@@ -328,14 +304,12 @@ class ConstruirTabelaResource(Resource):
         if request.args.get('gender') is not None:
             gender = request.args['gender']
         
-
         if datainicial:
             data = [datainicial, datafinal]
         else:
             data = False
         
         tabela = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
-       
         return Response(json.dumps(tabela, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
 
