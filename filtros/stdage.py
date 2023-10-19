@@ -1,10 +1,11 @@
 
 def stdAge(estudo, stdage):
-    stdage = stdage.split(',')
-    print(stdage)
-    tem = True
-    if stdage[0] == 'all':
+    if stdage == 'todos':
         return True
+    stdage = stdage.split(',')
+  
+    tem = True
+   
     if len(stdage) != len(estudo['StdAge']):
         return False
     for idade in stdage:

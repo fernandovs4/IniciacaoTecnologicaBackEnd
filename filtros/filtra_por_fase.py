@@ -1,6 +1,8 @@
 def filtra_por_fase(fase, estudo):
     if fase == 'nao_especificado':
         return True
+    if fase == 'todos':
+        return True
     fase = fase.split(',')
     fases_estudo = estudo['Phase']
     fase_estudo_alterado = []

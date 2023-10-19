@@ -65,9 +65,47 @@ class ConstruirTabelaResource(Resource):
             data = [datainicial, datafinal]
         else:
             data = False
-        
-        tabela = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
-        return Response(json.dumps(tabela, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+        dados = {}
+        estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
+
+        for estudo in estudos['estudos']:
+                LocationFacility = estudo['LocationFacility']
+                LeadSponsorName = estudo['LeadSponsorName']
+                hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
+                hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
+                if len(LeadSponsorName) > 0:
+                    fharma = LeadSponsorName[0]
+                    for hospital in LocationFacility:
+                        foi = False
+                        for apelido in hospitais_na_base.items():
+                            if hospital in apelido[1]:
+                                hospital = apelido[0]
+                                foi = True
+                                break
+                        if fharma in dados:
+                        
+                            if foi:
+                                if hospital not in dados[fharma]:
+                                    dados[fharma][hospital] = 1
+                                else:
+                                    dados[fharma][hospital] += 1
+                        else:
+                            dados[fharma] = {}
+                            if foi:
+                                dados[fharma][hospital] = 1
+        dados_formatados = {}
+        for fharma in dados:
+            if dados[fharma] != {}:
+                dados_formatados[fharma] = dados[fharma]
+      
+        if dados_formatados == {}:
+            return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+        if  not datafinal and not  datainicial:
+            with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
+                json.dump(dados_formatados, arquivo, indent=4)
+        return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+
+        return Response(json.dumps(estudos, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
 
 
@@ -81,17 +119,17 @@ class EstudosResource(Resource):
         if request.args.get('datafinal') is not None:
             datafinal = request.args['datafinal']
         
-        if request.args.get('cache') is not None:
-            if request.args['cache'] == 'true':
-                tabelaCache = open(PATH + Path('jsons/cacheTabela.jso'), 'r').read()
+        # if request.args.get('cache') is not None:
+        #     if request.args['cache'] == 'true':
+        #         tabelaCache = open(PATH / Path('jsons/cacheTabela.json'), 'r').read()
 
-                tabelaCache = json.loads(tabelaCache)
+        #         tabelaCache = json.loads(tabelaCache)
                 
-                return Response(json.dumps(tabelaCache, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
+        #         return Response(json.dumps(tabelaCache, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
 
-        
+
         dados = {}
-        hospitais = todos_hospitais()
+        hospitais = todos_hospitais(cache=True)
         if datainicial and datafinal:
             if validaDatas(datainicial) != True:
                 return validaDatas(datainicial)
@@ -107,7 +145,7 @@ class EstudosResource(Resource):
                     if dataEstudo  >= datainicial and dataEstudo <= datafinal:
                         LocationFacility = estudo['LocationFacility']
                         LeadSponsorName = estudo['LeadSponsorName']
-                        hospitais_na_base = open(PATH + Path('jsons/hospitais.json' ),'r').read()
+                        hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
                         hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
                         if len(LeadSponsorName) > 0:
                             fharma = LeadSponsorName[0]
@@ -134,10 +172,10 @@ class EstudosResource(Resource):
                     continue
         
         else:
-            for estudo in hospitais:
+            for estudo in hospitais["StudyFieldsResponse"]["StudyFields"]:
                 LocationFacility = estudo['LocationFacility']
                 LeadSponsorName = estudo['LeadSponsorName']
-                hospitais_na_base = open(PATH + Path('jsons/hospitais.json' ),'r').read()
+                hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
                 hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
                 if len(LeadSponsorName) > 0:
                     fharma = LeadSponsorName[0]
@@ -145,7 +183,6 @@ class EstudosResource(Resource):
                         foi = False
                         for apelido in hospitais_na_base.items():
                             if hospital in apelido[1]:
-                             
                                 hospital = apelido[0]
                                 foi = True
                                 break
@@ -168,7 +205,7 @@ class EstudosResource(Resource):
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
         if  not datafinal and not  datainicial:
-            with open(PATH + Path('jsons/cacheTabela.json'), 'w') as arquivo:
+            with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
                 json.dump(dados_formatados, arquivo, indent=4)
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
@@ -187,7 +224,7 @@ class HospitaisResource(Resource):
         hospital_selecionado = request.args['hospital-selecionado'] 
         
         hospitais_encontrados = getApelidos(entrada)
-        hospitais_cadastrados = open(PATH + Path('jsons/hospitais.json' ),'r').read()
+        hospitais_cadastrados = open(PATH / Path('jsons/hospitais.json' ),'r').read()
         hospitais_cadastrados = json.loads(hospitais_cadastrados)
         hospitais_registrados = []
         try:
@@ -223,7 +260,7 @@ class ApelidosResource(Resource):
       
         hospitais_json = abre_hospital_json_r()
         hospitais_json['hospitais'][list(body.keys())[0]] = body[list(body.keys())[0]]
-        abre_hospital_json_w(PATH + Path("jsons/hospitais.json" ),hospitais_json)
+        abre_hospital_json_w(PATH / Path("jsons/hospitais.json" ),hospitais_json)
 
         return Response(json.dumps(body), mimetype='application/json', status=201)
 
@@ -235,7 +272,7 @@ class ApelidosResource(Resource):
         for apelido in apelidos:
             if apelido not in hospitais_json['hospitais'][id_hospital]:
                 hospitais_json['hospitais'][id_hospital].append(apelido)
-        abre_hospital_json_w(PATH + Path("jsons/hospitais.json" ),hospitais_json)
+        abre_hospital_json_w(PATH / Path("jsons/hospitais.json" ),hospitais_json)
 
         return Response(json.dumps(body), mimetype='application/json', status=200)
 
@@ -245,14 +282,14 @@ class ApelidosResource(Resource):
         if id_hospital in hospitais_json_r['hospitais']:
             apelidos = hospitais_json_r['hospitais'][id_hospital]
             del hospitais_json_r['hospitais'][id_hospital]
-            abre_hospital_json_w(PATH + Path("jsons/hospitais.json" ),hospitais_json_r)
+            abre_hospital_json_w(PATH / Path("jsons/hospitais.json" ),hospitais_json_r)
             return Response(json.dumps({"response": "Hospital removido com sucesso!"}), mimetype='application/json', status=200)
         else:
             return Response(json.dumps({"response": "Hospital não encontrado!"}), mimetype='application/json', status=400)
 
 class NovoNomeHospitalResource(Resource):
     def get(self):
-        with open(PATH + Path('jsons/hospitais_dropdown'), 'r', encoding='utf-8') as hospitais_json:
+        with open(PATH / Path('jsons/hospitais_dropdown.json'), 'r', encoding='utf-8') as hospitais_json:
             hospitais_json = json.load(hospitais_json)
         return Response(json.dumps(hospitais_json, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
 
@@ -262,7 +299,7 @@ class NovoNomeHospitalResource(Resource):
         hospitais_json = abre_hospital_json_drop()
         if novo_hospital not in hospitais_json['hospitais']: 
             hospitais_json['hospitais'].append(novo_hospital) 
-            abre_hospital_json_w(PATH + Path("jsons/hospitais_dropdwon"), hospitais_json)
+            abre_hospital_json_w(PATH / Path("jsons/hospitais_dropdwon.json"), hospitais_json)
             return Response(json.dumps({"response": "Hospital adicionado com sucesso!"}), mimetype='application/json', status=201)
         else:
             return Response(json.dumps({"response": "Hospital já cadastrado!"}), mimetype='application/json', status=400)
@@ -274,7 +311,7 @@ class NovoNomeHospitalResource(Resource):
         for novo_hospital in hospitais_a_remover:
             if novo_hospital in hospitais_json['hospitais']:
                 hospitais_json['hospitais'].remove(novo_hospital)
-        abre_hospital_json_w(PATH + Path("jsons/hospitais_dropdown"), hospitais_json)
+        abre_hospital_json_w(PATH / Path("jsons/hospitais_dropdown.json"), hospitais_json)
         return Response(json.dumps({"response": "Hospital removido com sucesso!"}), mimetype='application/json', status=200)
 
 api.add_resource(EstudosResource, '/estudos')
