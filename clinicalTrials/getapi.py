@@ -8,7 +8,7 @@ def todos_hospitais(cache = False, farmas = False):
     max_rank = 100
     query = {
         'expr' : 'cancer AND  AREA[LeadSponsorClass]Industry AND SEARCH[Location](AREA[LocationCountry]Brasil)',
-        'fields' : 'LeadSponsorClass,LeadSponsorName,LocationFacility,LocationCountry,OverallStatus,StdAge,StartDate,LocationZip,Gender,MaximumAge,MinimumAge,Condition,LocationState,WhyStopped,Phase',
+        'fields' : 'LeadSponsorName,LocationFacility,LocationCountry,OverallStatus,StdAge,StartDate,Gender,MaximumAge,MinimumAge,Condition,LocationState,WhyStopped,Phase',
         'fmt' : 'JSON',   
         'min_rnk' : min_rank,
         'max_rnk' : max_rank
@@ -22,11 +22,11 @@ def todos_hospitais(cache = False, farmas = False):
 
     hospitais = []
     first_response = requests.get(url=url, params= query).json()
-    if cache:
-        with open(PATH / Path("json/cacheResults.json"), "r") as file:
-            cacheResults_ = json.load(file)
-            if first_response["StudyFieldsResponse"]["DataVrs"] == cacheResults_["StudyFieldsResponse"]["DataVrs"]:
-                return cacheResults_["StudyFieldsResponse"]["StudyFields"]
+    # if cache:
+    #     with open(PATH / Path("json/cacheResults.json"), "r") as file:
+    #         cacheResults_ = json.load(file)
+    #         if first_response["StudyFieldsResponse"]["DataVrs"] == cacheResults_["StudyFieldsResponse"]["DataVrs"]:
+    #             return cacheResults_["StudyFieldsResponse"]["StudyFields"]
     LeadSponsorName = set()
             
     NStudiesFound = first_response["StudyFieldsResponse"]["NStudiesFound"]
@@ -53,13 +53,13 @@ def todos_hospitais(cache = False, farmas = False):
         query["min_rnk"] += 100
         query['max_rnk'] += 100
     LeadSponsorName = {"LeadSponsorName" : list(LeadSponsorName)}
-    with open(PATH / Path("clinicalTrials/json/farmas.json"), "w") as file:
+    with open(PATH / Path("json/farmas.json"), "w") as file:
         json.dump(LeadSponsorName, file, indent=4)
     if farmas:
         return LeadSponsorName
     with open(PATH / Path("json/cacheResults.json"), "w") as file:
         json.dump(cacheResults, file, indent=4)
-
-    return hospitais
+  
+    return cacheResults
 
 

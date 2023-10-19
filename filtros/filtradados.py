@@ -46,29 +46,9 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
                     continue
 
         if stdage:
-            if not stdAge(estudo, stdage)
+            if not stdAge(estudo, stdage):
+                continue
         
-            if stdage == 'adulto':
-                if not stdAge(estudo, True, False, False, False):
-                    continue
-            elif stdage == 'idoso':
-                if not stdAge(estudo, False, True, False, False):
-                    continue
-            elif stdage == 'crianca':
-                if not stdAge(estudo, False, False, True, False):
-                    continue
-            elif stdage == 'todos':
-                if not stdAge(estudo, False, False, False, True):
-                    continue
-            elif stdage == 'adulto_idoso' or stdage == 'idoso_adulto':
-                if not stdAge(estudo, True, True, False, False):
-                    continue
-            elif stdage == 'adulto_crianca' or stdage == 'crianca_adulto':
-                if not stdAge(estudo, True, False, True, False):
-                    continue
-            elif stdage == 'idoso_crianca' or stdage == 'crianca_idoso':
-                if not stdAge(estudo, False, True, True, False):
-                    continue
-
+           
         dadosTabela['estudos'].append(estudo)
     return dadosTabela
