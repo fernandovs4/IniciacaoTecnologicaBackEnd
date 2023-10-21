@@ -3,7 +3,7 @@ from flask import Flask, request, make_response, jsonify, Response
 from flask_restful import Resource, Api
 import json
 from unidecode import unidecode
-from jsons.buscaApelidos     import getApelidos
+from clinicalTrials.buscaApelidos     import getApelidos
 from clinicalTrials.getapi import todos_hospitais
 from datetime import datetime
 from flask_cors import CORS
@@ -12,6 +12,9 @@ from funcoes_auxiliares.valida_data import validaDatas
 from funcoes_auxiliares.open_file import abre_hospital_json_r, abre_hospital_json_w, abre_hospital_json_drop
 from funcoes_auxiliares.convert_month_year_to_dd__mm_yyyy import convert_month_year_to_dd_mm_yyyy
 from pathlib import Path
+from funcoes_auxiliares.tabelaFarmasClinicas import tabela_farma_clinica
+from funcoes_auxiliares.tabelaCondicaoFarma import tabela_condicao_farma
+from funcoes_auxiliares.tabelaCondicaoClinica import tabela_condicao_clinica
 app = Flask(__name__)
 api = Api(app)
 
@@ -23,6 +26,7 @@ def constroi_tabela(data = False, fase=False, idade_min=False, idade_max=False, 
     dados = todos_hospitais(cache=True)
 
     dadosTabela = filtraDados(dadosTabela, dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
+  
     return dadosTabela
 
 
@@ -36,6 +40,7 @@ class ConstruirTabelaResource(Resource):
         idade_max = False
         status = False
         stdAge = False
+        tipo = False
 
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
@@ -61,53 +66,30 @@ class ConstruirTabelaResource(Resource):
         if request.args.get('gender') is not None:
             gender = request.args['gender']
         
+        if request.args.get("tipo") is not None:
+            tipo = request.args['tipo']
+        
         if datainicial:
             data = [datainicial, datafinal]
         else:
             data = False
-        dados = {}
+      
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
 
-        for estudo in estudos['estudos']:
-                LocationFacility = estudo['LocationFacility']
-                LeadSponsorName = estudo['LeadSponsorName']
-                hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
-                hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
-                if len(LeadSponsorName) > 0:
-                    fharma = LeadSponsorName[0]
-                    for hospital in LocationFacility:
-                        foi = False
-                        for apelido in hospitais_na_base.items():
-                            if hospital in apelido[1]:
-                                hospital = apelido[0]
-                                foi = True
-                                break
-                        if fharma in dados:
-                        
-                            if foi:
-                                if hospital not in dados[fharma]:
-                                    dados[fharma][hospital] = 1
-                                else:
-                                    dados[fharma][hospital] += 1
-                        else:
-                            dados[fharma] = {}
-                            if foi:
-                                dados[fharma][hospital] = 1
-        dados_formatados = {}
-        for fharma in dados:
-            if dados[fharma] != {}:
-                dados_formatados[fharma] = dados[fharma]
+        if tipo == 'farma_clinica':
+            dados_formatados = tabela_farma_clinica(estudos)
+        elif tipo == 'farma_condicao':
+            dados_formatados = tabela_condicao_farma(estudos)
+        elif tipo == 'clinica_condicao':
+            dados_formatados = tabela_condicao_clinica(estudos)
+
       
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-        if  not datafinal and not  datainicial:
-            with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
-                json.dump(dados_formatados, arquivo, indent=4)
+        # if  not datafinal and not  datainicial:
+        #     with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
+        #         json.dump(dados_formatados, arquivo, indent=4)
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-
-        return Response(json.dumps(estudos, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-
-
 
 
 class EstudosResource(Resource):
@@ -207,6 +189,7 @@ class EstudosResource(Resource):
         if  not datafinal and not  datainicial:
             with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
                 json.dump(dados_formatados, arquivo, indent=4)
+
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
 class TodosEstudosResource(Resource):

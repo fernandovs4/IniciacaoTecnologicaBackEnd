@@ -1,6 +1,6 @@
 
 def stdAge(estudo, stdage):
-    if stdage == 'todos':
+    if stdage == 'todas':
         return True
     stdage = stdage.split(',')
   

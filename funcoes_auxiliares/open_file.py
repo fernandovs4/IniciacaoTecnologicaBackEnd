@@ -1,13 +1,16 @@
 import json
+from pathlib import Path
+
+PATH = Path(__file__).parent.parent
 
 
 def abre_hospital_json_r():
-    with open("/home/fernando/WORKSPACE/IniciacaoTecnologica/SistemaWeb/api/apiRegex/hospitais.json", "r", encoding='utf-8') as apelidos_json:
+    with open(PATH / "jsons/hospitais.json", "r", encoding='utf-8') as apelidos_json:
                 apelidos_json = json.load(apelidos_json)
     return apelidos_json
 
 def abre_hospital_json_drop():
-    with open("hospitais_dropdown.json", "r", encoding='utf-8') as hospitais:
+    with open(PATH / "jsons/hospitais_dropdown.json", "r", encoding='utf-8') as hospitais:
                 hospitais = json.load(hospitais)
     return hospitais
 

@@ -37,7 +37,7 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
             elif gender == 'feminino':
                 if not Gender(estudo, False, True, False,False ):
                     continue
-            elif gender == 'todos':
+            elif gender == 'todas':
                 if not Gender(estudo, False, False,False,True):
                     continue
             elif gender == 'todos_generos':
