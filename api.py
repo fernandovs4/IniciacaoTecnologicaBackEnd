@@ -41,6 +41,8 @@ class ConstruirTabelaResource(Resource):
         status = False
         stdAge = False
         tipo = False
+        inversed = False
+        simetric = True
 
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
@@ -69,21 +71,31 @@ class ConstruirTabelaResource(Resource):
         if request.args.get("tipo") is not None:
             tipo = request.args['tipo']
         
+        if request.args.get("inversed") is not None:
+            if request.args['inversed'] == 'true':
+                inversed = True
+        
+        if request.args.get("simetric") is not None:
+            if request.args['simetric'] == 'false':
+                simetric = False
+
+        
         if datainicial:
             data = [datainicial, datafinal]
         else:
             data = False
+        
+
       
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
 
         if tipo == 'farma_clinica':
-            dados_formatados = tabela_farma_clinica(estudos)
+            dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric)
         elif tipo == 'farma_condicao':
-            dados_formatados = tabela_condicao_farma(estudos)
+            dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric)
         elif tipo == 'clinica_condicao':
-            dados_formatados = tabela_condicao_clinica(estudos)
+            dados_formatados = tabela_condicao_clinica(estudos, inversed=inversed, simetric=simetric)
 
-      
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
         # if  not datafinal and not  datainicial:
