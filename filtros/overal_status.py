@@ -6,6 +6,6 @@ def overalStatus(estudo, status):
         if len(estudo['OverallStatus']) == 1:
             if estudo['OverallStatus'][0].lower() == st:
                 return True
-    if status == ['todos'] or status == []:
+    if status == ['todas'] or status == []:
         return True
     return False

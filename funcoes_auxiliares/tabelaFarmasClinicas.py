@@ -4,7 +4,16 @@ import json
 import copy
 
 dados = {}
-def tabela_farma_clinica(estudos, inversed, simetric):
+def soma_quantidades(doeca_data):
+        return sum(doeca_data.values())
+
+def soma_quantidades(doeca_data):
+        return sum(doeca_data.values())
+
+def ordenar_valores(doeca_data):
+        return dict(sorted(doeca_data.items(), key=lambda item: item[1], reverse=True))
+
+def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo):
         res = {}
         hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
         hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
@@ -49,6 +58,17 @@ def tabela_farma_clinica(estudos, inversed, simetric):
                         novo_el[el[0]] = el[1]
                 res_simetric[item[0]] = novo_el
             res = res_simetric
+
+        if sort_externo:
+            # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
+            res = dict(sorted(res.items(), key=lambda item: sum(item[1].values()), reverse=True))
+    
+    
+        if sort_interno:
+            # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
+            res = {doenca: ordenar_valores(valores) for doenca, valores in sorted(res.items(), key=lambda item: soma_quantidades(item[1]), reverse=True)}
+
+
         return res
        
                             

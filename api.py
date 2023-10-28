@@ -14,7 +14,7 @@ from funcoes_auxiliares.convert_month_year_to_dd__mm_yyyy import convert_month_y
 from pathlib import Path
 from funcoes_auxiliares.tabelaFarmasClinicas import tabela_farma_clinica
 from funcoes_auxiliares.tabelaCondicaoFarma import tabela_condicao_farma
-from funcoes_auxiliares.tabelaCondicaoClinica import tabela_condicao_clinica
+from funcoes_auxiliares.tabelaCondicaoClinica import tabela_clinica_condicao
 app = Flask(__name__)
 api = Api(app)
 
@@ -43,6 +43,8 @@ class ConstruirTabelaResource(Resource):
         tipo = False
         inversed = False
         simetric = True
+        sort_interno = False
+        sort_externo = False
 
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
@@ -78,6 +80,15 @@ class ConstruirTabelaResource(Resource):
         if request.args.get("simetric") is not None:
             if request.args['simetric'] == 'false':
                 simetric = False
+        
+        if request.args.get("sort_interno") is not None:
+            if request.args['sort_interno'] == 'true':
+                sort_interno = True
+        
+        if request.args.get("sort_externo") is not None:
+            if request.args['sort_externo'] == 'true':
+                sort_externo = True
+
 
         
         if datainicial:
@@ -88,13 +99,15 @@ class ConstruirTabelaResource(Resource):
 
       
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
-
+        dados_formatados = {}
+        print(tipo)
         if tipo == 'farma_clinica':
-            dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric)
+           
+            dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo)
         elif tipo == 'farma_condicao':
-            dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric)
+            dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo)
         elif tipo == 'clinica_condicao':
-            dados_formatados = tabela_condicao_clinica(estudos, inversed=inversed, simetric=simetric)
+            dados_formatados = tabela_clinica_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo)
 
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
