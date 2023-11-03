@@ -28,7 +28,7 @@ def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, i
             # if status == 'Todos':
             if not overalStatus(estudo,status):
                     continue
-          
+        
 
         if gender:
             if gender == 'masculino':

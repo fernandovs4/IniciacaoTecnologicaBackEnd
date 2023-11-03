@@ -13,10 +13,10 @@ def soma_quantidades(doeca_data):
 def ordenar_valores(doeca_data):
         return dict(sorted(doeca_data.items(), key=lambda item: item[1], reverse=True))
 
-def tabela_condicao_farma(estudos, inversed, simetric, sort_interno, sort_externo):
+def tabela_condicao_farma(estudos, inversed, simetric, sort_interno, sort_externo, total_externo, total_interno):
     res = {}
     molde = {}
-    if inversed:
+    if not inversed:
        
         for estudo in estudos['estudos']:
             if estudo['LeadSponsorName'][0] not in molde:
@@ -56,6 +56,16 @@ def tabela_condicao_farma(estudos, inversed, simetric, sort_interno, sort_extern
                         novo_el[el[0]] = el[1]
                 res_simetric[item[0]] = novo_el
             res = res_simetric
+    if total_externo:
+            res['total_externo'] = {}
+            for farma in res:
+                if farma != 'total_externo':
+                    for hospital in res[farma]:
+                        if hospital in res['total_externo']:
+                            res['total_externo'][hospital] += res[farma][hospital]
+                        else:
+                            res['total_externo'][hospital] = res[farma][hospital]
+            res['total_externo'] = ordenar_valores(res['total_externo'])
         
     if sort_externo:
     # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)

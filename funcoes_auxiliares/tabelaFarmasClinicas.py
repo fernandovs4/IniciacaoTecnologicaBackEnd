@@ -13,8 +13,9 @@ def soma_quantidades(doeca_data):
 def ordenar_valores(doeca_data):
         return dict(sorted(doeca_data.items(), key=lambda item: item[1], reverse=True))
 
-def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo):
+def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo, total_externo, total_interno):
         res = {}
+        
         hospitais_na_base = open(PATH / Path('jsons/hospitais.json' ),'r').read()
         hospitais_na_base = json.loads(hospitais_na_base)['hospitais']
         if inversed:
@@ -58,6 +59,19 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
                         novo_el[el[0]] = el[1]
                 res_simetric[item[0]] = novo_el
             res = res_simetric
+        if total_interno:
+            res['total_interno'] = {}
+            for farma in res:
+                if farma != 'total_interno':
+                    for hospital in res[farma]:
+                        if hospital in res['total_interno']:
+                            res['total_interno'][hospital] += res[farma][hospital]
+                        else:
+                            res['tottotal_internoal'][hospital] = res[farma][hospital]
+            res['total_interno'] = ordenar_valores(res['total_interno'])
+        
+       
+
 
         if sort_externo:
             # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
@@ -67,6 +81,8 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
         if sort_interno:
             # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
             res = {doenca: ordenar_valores(valores) for doenca, valores in sorted(res.items(), key=lambda item: soma_quantidades(item[1]), reverse=True)}
+
+
 
 
         return res

@@ -17,7 +17,7 @@ def ordenar_valores(doeca_data):
 def soma_quantidades(doeca_data):
     return sum(doeca_data.values())
 
-def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_externo):
+def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_externo, total_externo, total_interno):
     res = {}
     estudos_condicoes =[]
     for estudo in estudos['estudos']:
@@ -38,7 +38,7 @@ def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_exte
         condicao = estudo['Condition'][0]
         LocationFacility = estudo['LocationFacility']
         if len(LocationFacility) > 0:
-            if not inversed:
+            if inversed:
                 for hospital in LocationFacility:
                     for apelido in hospital_na_base.items():
                         if hospital in apelido[1]:
@@ -70,6 +70,28 @@ def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_exte
                         novo_el[el[0]] = el[1]
                 res_simetric[item[0]] = novo_el
             res = res_simetric    
+    
+    if total_externo:
+            res['total_externo'] = {}
+            for farma in res:
+                if farma != 'total_externo':
+                    for hospital in res[farma]:
+                        if hospital in res['total_externo']:
+                            res['total_externo'][hospital] += res[farma][hospital]
+                        else:
+                            res['total_externo'][hospital] = res[farma][hospital]
+            res['total_externo'] = ordenar_valores(res['total_externo'])
+    
+    if total_interno:
+        
+        for dado in res.items():
+            soma = 0
+            if dado[0] != 'total_coluna':
+                for elem in dado[1].items():
+                     soma += elem[1]
+                res[dado[0]]['total_coluna'] = soma
+        
+        
     
     if sort_externo:
         # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)

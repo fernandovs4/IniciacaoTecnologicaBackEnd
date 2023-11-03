@@ -24,7 +24,6 @@ PATH =  Path(__file__).parent.absolute()
 def constroi_tabela(data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
     dadosTabela = {'estudos':[]}
     dados = todos_hospitais(cache=True)
-
     dadosTabela = filtraDados(dadosTabela, dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
   
     return dadosTabela
@@ -45,7 +44,8 @@ class ConstruirTabelaResource(Resource):
         simetric = True
         sort_interno = False
         sort_externo = False
-
+        total_externo = False
+        total_interno = False
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
         
@@ -88,6 +88,10 @@ class ConstruirTabelaResource(Resource):
         if request.args.get("sort_externo") is not None:
             if request.args['sort_externo'] == 'true':
                 sort_externo = True
+        
+        if request.args.get("total_externo") is not None:
+            if request.args['total_externo'] == 'true':
+                total_externo = True
 
 
         
@@ -101,13 +105,13 @@ class ConstruirTabelaResource(Resource):
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
         dados_formatados = {}
         print(tipo)
-        if tipo == 'farma_clinica':
+        if tipo == 'farma_clinica' or tipo == 'clinica_farma':
            
-            dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo)
-        elif tipo == 'farma_condicao':
-            dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo)
-        elif tipo == 'clinica_condicao':
-            dados_formatados = tabela_clinica_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo)
+            dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo, total_externo = total_externo, total_interno = total_interno)
+        elif tipo == 'farma_condicao' or tipo == 'condicao_farma' :
+            dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo, total_interno = total_interno, total_externo = total_externo)
+        elif tipo == 'clinica_condicao' or tipo == 'condicao_clinica':
+            dados_formatados = tabela_clinica_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
 
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
