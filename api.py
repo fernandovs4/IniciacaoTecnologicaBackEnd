@@ -339,14 +339,46 @@ class  Dashboard(Resource):
         estudos = todos_hospitais(cache=True)
         qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound']
         qtd_estudos_por_ano = {}
+        qtd_estudos_ac_camargo = 0
         tipos_de_estudos = {}
+        tipos_de_estudos_ac_camargo = {}
         qtd_estudos_por_ano_por_clinica = {}
         for estudo in estudos['StudyFieldsResponse']['StudyFields']:
             try:
                 if estudo['OverallStatus'][0] not in tipos_de_estudos:
                     tipos_de_estudos[estudo['OverallStatus'][0]] = 1
+                    h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
+                    h = json.loads(h)
+                    for clinica in estudo['LocationFacility']:
+                        for c, apelidos in h['hospitais'].items():
+                            if clinica in apelidos:
+                                if c not in tipos_de_estudos_ac_camargo:
+                                    tipos_de_estudos_ac_camargo[c] = {}
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                else:
+                                    if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
+                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                    else:
+                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
+                                if c == "A.C. Camargo":
+                                    qtd_estudos_ac_camargo += 1
                 else:
                     tipos_de_estudos[estudo['OverallStatus'][0]] += 1
+                    h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
+                    h = json.loads(h)
+                    for clinica in estudo['LocationFacility']:
+                        for c, apelidos in h['hospitais'].items():
+                            if clinica in apelidos:
+                                if c not in tipos_de_estudos_ac_camargo:
+                                    tipos_de_estudos_ac_camargo[c] = {}
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                else:
+                                    if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
+                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                    else:
+                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
+                                if c == "A.C. Camargo":
+                                    qtd_estudos_ac_camargo += 1
                 data = estudo['StartDate'][0]
                 data = convert_month_year_to_dd_mm_yyyy(data)[6:]
                 locationFacility = estudo['LocationFacility']
@@ -394,14 +426,15 @@ class  Dashboard(Resource):
 # Ordena as datas e cria um OrderedDict
         
         qtd_estudos_por_ano_por_clinica = OrderedDict(sorted(qtd_estudos_por_ano_por_clinica.items()))
-            
+
 
     # Exibe os dados ordenados
         for clinica, valores in qtd_estudos_por_ano_por_clinica.items():
             qtd_estudos_por_ano_por_clinica[clinica] = OrderedDict(sorted(valores.items()))
+        
        
       
-        return Response(json.dumps({"qtd_estudos": qtd_estudos, "qtd_estudos_por_ano": qtd_estudos_por_ano , "dados_formatados": dados_formatados, "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": novo_dici }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
+        return Response(json.dumps({"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "dados_formatados": dados_formatados, "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": novo_dici, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
     
 api.add_resource(Dashboard, '/dashboard')
 api.add_resource(EstudosResource, '/estudos')
