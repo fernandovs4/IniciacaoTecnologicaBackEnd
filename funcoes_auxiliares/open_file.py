@@ -7,6 +7,7 @@ PATH = Path(__file__).parent.parent
 def abre_hospital_json_r():
     with open(PATH / "jsons/hospitais.json", "r", encoding='utf-8') as apelidos_json:
                 apelidos_json = json.load(apelidos_json)
+    
     return apelidos_json
 
 def abre_hospital_json_drop():

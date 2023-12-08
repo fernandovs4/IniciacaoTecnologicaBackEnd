@@ -60,18 +60,25 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
                 res_simetric[item[0]] = novo_el
             res = res_simetric
         if total_interno:
-            res['total_interno'] = {}
+            res['Total'] = {}
             for farma in res:
-                if farma != 'total_interno':
+                if farma != 'Total':
                     for hospital in res[farma]:
-                        if hospital in res['total_interno']:
-                            res['total_interno'][hospital] += res[farma][hospital]
+                        if hospital in res['Total']:
+                            res['Total'][hospital] += res[farma][hospital]
                         else:
-                            res['tottotal_internoal'][hospital] = res[farma][hospital]
-            res['total_interno'] = ordenar_valores(res['total_interno'])
+                            res['Total'][hospital] = res[farma][hospital]
+            res['Total'] = ordenar_valores(res['Total'])
         
-       
-
+        novo_res = {}
+        if total_externo:
+            
+            for farma in res.keys():
+                print(farma)
+                soma = sum(list(res[farma].values()))
+                novo_res[farma] = res[farma]
+                novo_res[farma]['Total'] = soma
+            res = novo_res
 
         if sort_externo:
             # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
@@ -81,9 +88,6 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
         if sort_interno:
             # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
             res = {doenca: ordenar_valores(valores) for doenca, valores in sorted(res.items(), key=lambda item: soma_quantidades(item[1]), reverse=True)}
-
-
-
 
         return res
        

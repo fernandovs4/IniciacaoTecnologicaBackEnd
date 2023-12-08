@@ -36,19 +36,16 @@ def todos_hospitais(cache = False, farmas = False):
                                            "FieldList": first_response["StudyFieldsResponse"]["FieldList"], 
                                            "StudyFields": first_response["StudyFieldsResponse"]["StudyFields"]}
 
-
     for study in first_response["StudyFieldsResponse"]["StudyFields"]:
-        print(study['LeadSponsorName'][0])
-        
         LeadSponsorName.add(study['LeadSponsorName'][0])
 
     while(query["max_rnk"] <= NStudiesFound):
         next_response = requests.get(url=url, params= query).json()
+        print(query["max_rnk"])
         study = next_response["StudyFieldsResponse"]["StudyFields"]
         cacheResults["StudyFieldsResponse"]["StudyFields"] += study
         hospitais += study
         for study in next_response["StudyFieldsResponse"]["StudyFields"]:
-           
             LeadSponsorName.add(study['LeadSponsorName'][0])
         query["min_rnk"] += 100
         query['max_rnk'] += 100

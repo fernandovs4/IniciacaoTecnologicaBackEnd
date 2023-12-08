@@ -15,6 +15,10 @@ from pathlib import Path
 from funcoes_auxiliares.tabelaFarmasClinicas import tabela_farma_clinica
 from funcoes_auxiliares.tabelaCondicaoFarma import tabela_condicao_farma
 from funcoes_auxiliares.tabelaCondicaoClinica import tabela_clinica_condicao
+from funcoes_auxiliares.tabelaFaseClinica import tabela_fase_clinica
+from funcoes_auxiliares.tabelaFaseCondicao import tabela_fase_condicao
+from funcoes_auxiliares.tabelaFaseFarma import tabela_fase_farma
+from collections import OrderedDict
 app = Flask(__name__)
 api = Api(app)
 
@@ -46,6 +50,7 @@ class ConstruirTabelaResource(Resource):
         sort_externo = False
         total_externo = False
         total_interno = False
+
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
         
@@ -92,27 +97,31 @@ class ConstruirTabelaResource(Resource):
         if request.args.get("total_externo") is not None:
             if request.args['total_externo'] == 'true':
                 total_externo = True
-
-
         
+        if request.args.get("total_interno") is not None:
+            if request.args['total_interno'] == 'true':
+                total_interno = True
+
         if datainicial:
             data = [datainicial, datafinal]
         else:
             data = False
         
-
-      
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
         dados_formatados = {}
         print(tipo)
         if tipo == 'farma_clinica' or tipo == 'clinica_farma':
-           
             dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo, total_externo = total_externo, total_interno = total_interno)
         elif tipo == 'farma_condicao' or tipo == 'condicao_farma' :
             dados_formatados = tabela_condicao_farma(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo, total_interno = total_interno, total_externo = total_externo)
         elif tipo == 'clinica_condicao' or tipo == 'condicao_clinica':
             dados_formatados = tabela_clinica_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
-
+        elif tipo == 'fase_clinica' or tipo == 'clinica_fase':
+            dados_formatados = tabela_fase_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
+        elif tipo == 'fase_condicao' or tipo == 'condicao_fase':
+            dados_formatados = tabela_fase_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
+        elif tipo == 'fase_farma' or tipo == 'farma_fase':
+            dados_formatados = tabela_fase_farma(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
         # if  not datafinal and not  datainicial:
@@ -218,7 +227,6 @@ class EstudosResource(Resource):
         if  not datafinal and not  datainicial:
             with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
                 json.dump(dados_formatados, arquivo, indent=4)
-
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
 class TodosEstudosResource(Resource):
@@ -326,6 +334,76 @@ class NovoNomeHospitalResource(Resource):
         abre_hospital_json_w(PATH / Path("jsons/hospitais_dropdown.json"), hospitais_json)
         return Response(json.dumps({"response": "Hospital removido com sucesso!"}), mimetype='application/json', status=200)
 
+class  Dashboard(Resource):
+    def get(self):
+        estudos = todos_hospitais(cache=True)
+        qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound']
+        qtd_estudos_por_ano = {}
+        tipos_de_estudos = {}
+        qtd_estudos_por_ano_por_clinica = {}
+        for estudo in estudos['StudyFieldsResponse']['StudyFields']:
+            try:
+                if estudo['OverallStatus'][0] not in tipos_de_estudos:
+                    tipos_de_estudos[estudo['OverallStatus'][0]] = 1
+                else:
+                    tipos_de_estudos[estudo['OverallStatus'][0]] += 1
+                data = estudo['StartDate'][0]
+                data = convert_month_year_to_dd_mm_yyyy(data)[6:]
+                locationFacility = estudo['LocationFacility']
+                hospitais = abre_hospital_json_r()['hospitais']
+                
+               
+                for clinica in locationFacility:
+                  
+                    for c, apelidos in hospitais.items():
+                        
+                        if clinica in apelidos:
+                          
+                            if c in qtd_estudos_por_ano_por_clinica:
+                                print("bbbbbb")
+                                if data in qtd_estudos_por_ano_por_clinica[c]:
+                                    qtd_estudos_por_ano_por_clinica[c][data] += 1
+                                else:
+                                    qtd_estudos_por_ano_por_clinica[c][data] = 1
+                            else:
+                                qtd_estudos_por_ano_por_clinica[c] = {}
+                                qtd_estudos_por_ano_por_clinica[c][data] = 1
+
+               
+                if data in qtd_estudos_por_ano:
+                    qtd_estudos_por_ano[data] += 1
+                else:
+                    qtd_estudos_por_ano[data] = 1
+            except:
+                continue
+        novo_dici = {}
+        for hospitais, valores in qtd_estudos_por_ano_por_clinica.items():
+           
+            if hospitais == "A.C. Camargo" or hospitais == "Sírio Libanês" or hospitais == "Rio Preto":
+                novo_dici[hospitais] = valores
+        qtd_estudos_por_ano_por_clinica = novo_dici 
+        qtd_estudos_por_ano = dict(sorted(qtd_estudos_por_ano.items(), key=lambda item: item[0]))
+
+        dados_formatados = constroi_tabela()
+        # tabela_fase_clinic = tabela_fase_clinica(dados_formatados)
+        # tabela_fase_farm = tabela_fase_farma(dados_formatados)
+        # tabela_fase_condica = tabela_fase_condicao(dados_formatados)
+        # ordenar as datas do dicionario de qtd_estudos_por_ano_por_clinica
+
+        
+# Ordena as datas e cria um OrderedDict
+        
+        qtd_estudos_por_ano_por_clinica = OrderedDict(sorted(qtd_estudos_por_ano_por_clinica.items()))
+            
+
+    # Exibe os dados ordenados
+        for clinica, valores in qtd_estudos_por_ano_por_clinica.items():
+            qtd_estudos_por_ano_por_clinica[clinica] = OrderedDict(sorted(valores.items()))
+       
+      
+        return Response(json.dumps({"qtd_estudos": qtd_estudos, "qtd_estudos_por_ano": qtd_estudos_por_ano , "dados_formatados": dados_formatados, "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": novo_dici }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
+    
+api.add_resource(Dashboard, '/dashboard')
 api.add_resource(EstudosResource, '/estudos')
 api.add_resource(HospitaisResource, '/hospitais')
 api.add_resource(ApelidosResource, '/apelidos')

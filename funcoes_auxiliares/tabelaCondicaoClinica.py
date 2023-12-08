@@ -71,28 +71,27 @@ def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_exte
                 res_simetric[item[0]] = novo_el
             res = res_simetric    
     
-    if total_externo:
-            res['total_externo'] = {}
-            for farma in res:
-                if farma != 'total_externo':
-                    for hospital in res[farma]:
-                        if hospital in res['total_externo']:
-                            res['total_externo'][hospital] += res[farma][hospital]
-                        else:
-                            res['total_externo'][hospital] = res[farma][hospital]
-            res['total_externo'] = ordenar_valores(res['total_externo'])
-    
     if total_interno:
+            res['Total'] = {}
+            for farma in res:
+                if farma != 'Total':
+                    for hospital in res[farma]:
+                        if hospital in res['Total']:
+                            res['Total'][hospital] += res[farma][hospital]
+                        else:
+                            res['Total'][hospital] = res[farma][hospital]
+            res['Total'] = ordenar_valores(res['Total'])
         
-        for dado in res.items():
-            soma = 0
-            if dado[0] != 'total_coluna':
-                for elem in dado[1].items():
-                     soma += elem[1]
-                res[dado[0]]['total_coluna'] = soma
+    novo_res = {}
+    if total_externo:
+            
+            for farma in res.keys():
+                print(farma)
+                soma = sum(list(res[farma].values()))
+                novo_res[farma] = res[farma]
+                novo_res[farma]['Total'] = soma
+            res = novo_res
         
-        
-    
     if sort_externo:
         # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
         res = dict(sorted(res.items(), key=lambda item: sum(item[1].values()), reverse=True))
@@ -101,6 +100,5 @@ def tabela_clinica_condicao(estudos, inversed, simetric, sort_interno, sort_exte
     if sort_interno:
         # Ordena as doenças com base na soma das quantidades dos hospitais (em ordem decrescente)
         res = {doenca: ordenar_valores(valores) for doenca, valores in sorted(res.items(), key=lambda item: soma_quantidades(item[1]), reverse=True)}
-
 
     return res
