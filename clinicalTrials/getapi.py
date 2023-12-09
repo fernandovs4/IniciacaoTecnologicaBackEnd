@@ -6,8 +6,26 @@ PATH = Path(__file__).parent
 def todos_hospitais(cache = False, farmas = False):
     min_rank = 1
     max_rank = 100
+    expr = ['Tumor',
+            'Neoplasm',
+            'Tumors',
+            'Neoplasia',
+            'Neoplasias',
+            'Cancer',
+            'Cancers',
+            'Malignant Neoplasm',
+            'Malignancy',
+            'Malignancies',
+            'Malignant Neoplasms',
+            'Neoplasm, Malignant',
+            'Neoplasms, Malignant',
+            'Benign Neoplasms',
+            'Benign Neoplasm',
+            'Neoplasms, Benign',
+            'Neoplasm, Benign']
+    
     query = {
-        'expr' : 'cancer AND  AREA[LeadSponsorClass]Industry AND SEARCH[Location](AREA[LocationCountry]Brasil)',
+        'expr' : 'cancer AND  AREA[LeadSponsorClass]Industry',
         'fields' : 'LeadSponsorName,LocationFacility,LocationCountry,OverallStatus,StdAge,StartDate,Gender,MaximumAge,MinimumAge,Condition,LocationState,WhyStopped,Phase',
         'fmt' : 'JSON',   
         'min_rnk' : min_rank,
