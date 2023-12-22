@@ -148,6 +148,9 @@
             "Albert Einstein Healthcare Network"
         ],
         "Rio Preto": [
+            "Faculdade de Medicina de S\u00e3o Jos\u00e9 do Rio Preto Hospital de Base",
+            "Funda\u00e7ao Faculdade Regional de Medicina Sao Jose do Rio Preto",
+            "Hospital de Base - Fac Med de Sao Jose do Rio Preto",
             "Hospital de Base - Fundacao Faculdade Regional de Medicina de Sao Jose do Rio Preto",
             "IMC - Instituto de Molestias Cardiovasculares/Equipamentos Cardiovasculares Rio Preto Ltda",
             "Funda\u00e7\u00e3o Faculdade Regional de Medicina de S\u00e3o Jos\u00e9 do Rio Preto - Hospital de Base",
@@ -289,6 +292,53 @@
             "Hospital M\u00e3e de Deus/Aesc",
             "Hospital Mae de Deus",
             "HGB - Hospital Giovanni Battista - M\u00e3e de Deus Center"
+        ],
+        "Beneficencia": [
+            "A Benefic\u00eancia Portuguesa de S\u00e3o Paulo - Unidade Mirante",
+            "Real e Benemerita Associa\u00e7ao Portuguesa de Beneficencia - A Beneficencia Portuguesa de Sao Paulo",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0401)",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia /ID# 226641",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia (Benefic\u00eancia Portuguesa)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0609)",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo-Medical Oncology ( Site 0300)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0161)",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia /ID# 228121",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia /ID# 226023",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia /ID# 224305",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 1653)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0064)",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo-Medical Oncology ( Site 0175)",
+            "Hospital Benefic\u00eancia Portuguesa de S\u00e3o Paulo",
+            "BP A Beneficencia Portuguesa da Sao Paulo",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo ( Site 0302)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0260)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 2713)",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo ( Site 1559)",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 0214)",
+            "Hospital Beneficencia Portuguesa",
+            "Beneficencia Portuguesa de Sao Paulo",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo ( Site 0403)",
+            "BP - A Beneficencia Portuguesa de S\u00e3o Paulo",
+            "Real e Portuguesa de Benefic\u00e9ncia - Hospital Benefic\u00e9ncia Portuguesa (BP) - Unidade Paulista",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia - Hospital Beneficencia Portuguesa (BP) - Unidade Paulista",
+            "Sociedad de Beneficencia Hospital Italiano",
+            "Real e Benemerita Associacao Portuguesa de Beneficencia ( Site 2710)",
+            "Real e Benem\u00e9rita Associa\u00e7\u00e3o Portuguesa de Benefic\u00eancia"
+        ],
+        "Rede D`or": [
+            "Cl\u00ednica OncoStar - REDE D\u00b4OR",
+            "Oncologia Rede D\u00b4Or",
+            "Cl\u00ednica Onco Star - Rede D'Or",
+            "Oncologia Rede D'Or S.A.",
+            "Oncologia Rede D'Or"
+        ],
+        "Hospital do Cora\u00e7\u00e3o": [
+            "Instituto do Coracao - HCFMUSP ( Site 1803)",
+            "Incor - Instituto do Coracao HCFMUSP",
+            "Incor - Instituto do Coracao ( Site 0557)",
+            "Centro de Pesquisa Clinica do Coracao ( Site 0561)",
+            "Instituto do Cora\u00e7\u00e3o - HCFMUSP",
+            "Hospital do Coracao de Alagoas"
         ]
     }
 }

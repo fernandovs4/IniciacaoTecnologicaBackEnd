@@ -18,6 +18,7 @@ from funcoes_auxiliares.tabelaCondicaoClinica import tabela_clinica_condicao
 from funcoes_auxiliares.tabelaFaseClinica import tabela_fase_clinica
 from funcoes_auxiliares.tabelaFaseCondicao import tabela_fase_condicao
 from funcoes_auxiliares.tabelaFaseFarma import tabela_fase_farma
+from funcoes_auxiliares.reajustaDatas import reajustaDatas
 from collections import OrderedDict
 app = Flask(__name__)
 api = Api(app)
@@ -25,7 +26,7 @@ api = Api(app)
 CORS(app)
 PATH =  Path(__file__).parent.absolute()
 
-def constroi_tabela(data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
+def constroi_tabela(data = False,  fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
     dadosTabela = {'estudos':[]}
     dados = todos_hospitais(cache=True)
     dadosTabela = filtraDados(dadosTabela, dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
@@ -109,7 +110,7 @@ class ConstruirTabelaResource(Resource):
         
         estudos = constroi_tabela(data=data, fase=fase, idade_min=idade_min, idade_max=idade_max, status=status, stdAge=stdAge, gender=gender)
         dados_formatados = {}
-        print(tipo)
+ 
         if tipo == 'farma_clinica' or tipo == 'clinica_farma':
             dados_formatados = tabela_farma_clinica(estudos, inversed=inversed, simetric=simetric, sort_interno = sort_interno, sort_externo = sort_externo, total_externo = total_externo, total_interno = total_interno)
         elif tipo == 'farma_condicao' or tipo == 'condicao_farma' :
@@ -319,7 +320,7 @@ class NovoNomeHospitalResource(Resource):
         hospitais_json = abre_hospital_json_drop()
         if novo_hospital not in hospitais_json['hospitais']: 
             hospitais_json['hospitais'].append(novo_hospital) 
-            abre_hospital_json_w(PATH / Path("jsons/hospitais_dropdwon.json"), hospitais_json)
+            abre_hospital_json_w(PATH / Path("jsons/hospitais_dropdown.json"), hospitais_json)
             return Response(json.dumps({"response": "Hospital adicionado com sucesso!"}), mimetype='application/json', status=201)
         else:
             return Response(json.dumps({"response": "Hospital já cadastrado!"}), mimetype='application/json', status=400)
@@ -337,7 +338,7 @@ class NovoNomeHospitalResource(Resource):
 class  Dashboard(Resource):
     def get(self):
         estudos = todos_hospitais(cache=True)
-        qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound']
+        qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound'] 
         qtd_estudos_por_ano = {}
         qtd_estudos_ac_camargo = 0
         tipos_de_estudos = {}
@@ -392,7 +393,7 @@ class  Dashboard(Resource):
                         if clinica in apelidos:
                           
                             if c in qtd_estudos_por_ano_por_clinica:
-                                print("bbbbbb")
+                              
                                 if data in qtd_estudos_por_ano_por_clinica[c]:
                                     qtd_estudos_por_ano_por_clinica[c][data] += 1
                                 else:
@@ -432,9 +433,10 @@ class  Dashboard(Resource):
         for clinica, valores in qtd_estudos_por_ano_por_clinica.items():
             qtd_estudos_por_ano_por_clinica[clinica] = OrderedDict(sorted(valores.items()))
         
+        qtd_estudos_por_ano_por_clinica = reajustaDatas(qtd_estudos_por_ano_por_clinica)
        
       
-        return Response(json.dumps({"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "dados_formatados": dados_formatados, "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": novo_dici, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
+        return Response(json.dumps({"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": qtd_estudos_por_ano_por_clinica, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
     
 api.add_resource(Dashboard, '/dashboard')
 api.add_resource(EstudosResource, '/estudos')

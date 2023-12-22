@@ -25,7 +25,7 @@ def todos_hospitais():
         query["min_rnk"] += 100
         query['max_rnk'] += 100
         print(query["max_rnk"])
-    print(hospitais)
+  
     with open("api/apiRegex/clinicalTrials/todosHospitais.json", "w") as arquivo_json:
         # Use json.dump() para escrever o dicionário no arquivo JSON
         json.dump({"hospitais": hospitais}, arquivo_json)

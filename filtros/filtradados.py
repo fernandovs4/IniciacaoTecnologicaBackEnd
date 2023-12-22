@@ -9,6 +9,7 @@ from filtros.maximun_age import maximumAge
 def filtraDados(dadosTabela, dados, data = False, fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdage=False):
     for estudo in dados:
         if data:
+            
             if not filtra_por_data(data[0], data[1], estudo):
                 continue
             

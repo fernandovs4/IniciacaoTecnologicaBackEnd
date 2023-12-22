@@ -19,25 +19,36 @@ def tabela_condicao_farma(estudos, inversed, simetric, sort_interno, sort_extern
     if not inversed:
        
         for estudo in estudos['estudos']:
-            if estudo['LeadSponsorName'][0] not in molde:
-                molde[estudo['LeadSponsorName'][0]] = 0
+            try:
+                if estudo['LeadSponsorName'][0] not in molde:
+                    molde[estudo['LeadSponsorName'][0]] = 0
+            except KeyError as e :
+                continue
         for estudo in estudos['estudos']:
-            condicao = estudo['Condition'][0]
-            LeadSponsorName = estudo['LeadSponsorName']
-            if len(LeadSponsorName) > 0:
-                if condicao in res:
-                        res[condicao][LeadSponsorName[0]] += 1
-                else:
-                    res[condicao] = copy.deepcopy(molde)
-                    res[condicao][LeadSponsorName[0]] = 1
+            try:
+                condicao = estudo['Condition'][0]
+                LeadSponsorName = estudo['LeadSponsorName']
+                if len(LeadSponsorName) > 0:
+                    if condicao in res:
+                            res[condicao][LeadSponsorName[0]] += 1
+                    else:
+                        res[condicao] = copy.deepcopy(molde)
+                        res[condicao][LeadSponsorName[0]] = 1
+            except KeyError as e :
+                continue
     else:
         for estudo in estudos['estudos']:
-            if estudo['Condition'][0] not in molde:
-                molde[estudo['Condition'][0]] = 0
-
+            try:
+                if estudo['Condition'][0] not in molde:
+                    molde[estudo['Condition'][0]] = 0
+            except KeyError as e :
+                continue
         for estudo in estudos['estudos']:
-            condicao = estudo['Condition'][0]
-            LeadSponsorName = estudo['LeadSponsorName']
+            try:
+                condicao = estudo['Condition'][0]
+                LeadSponsorName = estudo['LeadSponsorName']
+            except KeyError as e :
+                continue
             if len(LeadSponsorName) > 0:
                 if LeadSponsorName[0] in res:
                     if condicao in res[LeadSponsorName[0]]:
@@ -71,7 +82,6 @@ def tabela_condicao_farma(estudos, inversed, simetric, sort_interno, sort_extern
     if total_externo:
             
             for farma in res.keys():
-                print(farma)
                 soma = sum(list(res[farma].values()))
                 novo_res[farma] = res[farma]
                 novo_res[farma]['Total'] = soma

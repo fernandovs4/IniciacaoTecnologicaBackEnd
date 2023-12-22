@@ -4,6 +4,7 @@ def filtra_por_data(datainicial, datafinal, estudo):
     try:
         dataEstudo = convert_month_year_to_dd_mm_yyyy(estudo['StartDate'][0])
     except:
+       
         return False
     dataEstudo = datetime.strptime(dataEstudo, '%d-%m-%Y').date()
     datafinal = datetime.strptime(datafinal, '%d-%m-%Y').date()
