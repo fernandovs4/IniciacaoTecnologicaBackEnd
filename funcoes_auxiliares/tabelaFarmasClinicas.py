@@ -22,8 +22,10 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
             molde ={f"{hosp}": 0 for hosp in json.loads(open(PATH / Path('jsons/hospitais.json' ),'r').read())['hospitais'].keys()}
             for estudo in estudos['estudos']:
                 LocationFacility = estudo['LocationFacility']
-                LeadSponsorName = estudo['LeadSponsorName'][0]
-                
+                try:
+                    LeadSponsorName = estudo['LeadSponsorName'][0]
+                except KeyError as e :
+                    continue
                 if len(LocationFacility) > 0:
                     for hospital in LocationFacility:
                         for apelido in hospitais_na_base.items():
@@ -38,7 +40,10 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
             molde = {f"{farma['LeadSponsorName'][0]}": 0 for farma in estudos['estudos']}
             for estudo in estudos['estudos']:
                 LocationFacility = estudo['LocationFacility']
-                LeadSponsorName = estudo['LeadSponsorName'][0]
+                try:
+                    LeadSponsorName = estudo['LeadSponsorName'][0]
+                except KeyError as e :
+                    continue
 
                 if len(LocationFacility) > 0:
                     for hospital in LocationFacility:
@@ -74,7 +79,6 @@ def tabela_farma_clinica(estudos, inversed, simetric, sort_interno, sort_externo
         if total_externo:
             
             for farma in res.keys():
-                print(farma)
                 soma = sum(list(res[farma].values()))
                 novo_res[farma] = res[farma]
                 novo_res[farma]['Total'] = soma

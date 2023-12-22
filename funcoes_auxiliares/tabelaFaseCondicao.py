@@ -10,9 +10,9 @@ def ordenar_valores(doeca_data):
         return dict(sorted(doeca_data.items(), key=lambda item: item[1], reverse=True))
 
 def tabela_fase_condicao(estudos, inversed=False, simetric=False, sort_interno=False, sort_externo=False, total_externo=False, total_interno=False):
-    res = {"Total": {"Total":0}, "fase 1": {"Total":0}, "fase 2": {"Total":0}, "fase 3": {"Total":0}, "fase 4": {"Total":0}, "sem fase": {"Total":0}, "Nao aplicavel": {"Total":0}}
+    res = {"Total": {"Total":0}, "fase 1": {"Total":0}, "fase 2": {"Total":0}, "fase 3": {"Total":0}, "fase 4": {"Total":0}, "sem fase": {"Total":0}, "Nao aplicavel": {"Total":0}, "fase inicial": {"Total":0} }
     if inversed:
-        res = {"Total":{"Total": 0, "fase 1": 0, "fase 2": 0, "fase 3": 0, "fase 4": 0, "sem fase": 0, "Nao aplicavel": 0}}
+        res = {"Total":{"Total": 0, "fase 1": 0, "fase 2": 0, "fase 3": 0, "fase 4": 0, "sem fase": 0, "Nao aplicavel": 0, "fase inicial": 0}}
 
     for estudo in estudos['estudos']:
             if inversed:
@@ -84,22 +84,28 @@ def tabela_fase_condicao(estudos, inversed=False, simetric=False, sort_interno=F
                                 res["Total"][condition] += 1
                             else:
                                 res["Total"][condition] = 1
+                   
                     else:
                         for f in fase:
-                            if condition in res["fase " + f.split(' ')[1]]:
-                                res["fase " + f.split(" ")[1]][condition] += 1
-                                res["fase " + f.split(" ")[1]]["Total"] += 1
-                                if condition in res["Total"]:
-                                    res["Total"][condition] += 1
+                            
+                                if f == 'Early Phase 1':
+                                    f = 'fase inicial'
+                                if condition in res["fase " + f.split(' ')[1]]:
+                                    res["fase " + f.split(" ")[1]][condition] += 1
+                                    res["fase " + f.split(" ")[1]]["Total"] += 1
+                                    if condition in res["Total"]:
+                                        res["Total"][condition] += 1
+                                    else:
+                                        res["Total"][condition] = 1
                                 else:
-                                    res["Total"][condition] = 1
-                            else:
-                                res["fase " + f.split(" ")[1]][condition] = 1
-                                res["fase " + f.split(" ")[1]]["Total"] += 1
-                                if condition in res["Total"]:
-                                    res["Total"][condition] += 1
-                                else:
-                                    res["Total"][condition] = 1
+                                    res["fase " + f.split(" ")[1]][condition] = 1
+                                    res["fase " + f.split(" ")[1]]["Total"] += 1
+                                    if condition in res["Total"]:
+                                        res["Total"][condition] += 1
+                                    else:
+                                        res["Total"][condition] = 1
+                           
+                                 
     res["Total"]["Total"] = sum(res["Total"].values())
 
     if not simetric:
@@ -126,7 +132,7 @@ def tabela_fase_condicao(estudos, inversed=False, simetric=False, sort_interno=F
     if total_externo:
             
             for farma in res.keys():
-                print(farma)
+            
                 soma = sum(list(res[farma].values()))
                 novo_res[farma] = res[farma]
                 novo_res[farma]['Total'] = soma
