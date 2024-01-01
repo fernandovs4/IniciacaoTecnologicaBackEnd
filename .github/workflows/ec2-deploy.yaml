@@ -48,5 +48,4 @@ jobs:
           sudo docker pull fernandowi55/api-iniciacao:latest &&
           sudo docker stop api-iniciacao || true &&
           sudo docker rm api-iniciacao || true &&
-          sudo docker run --name api-iniciacao -d -p 3000:80 fernandowi55/api-iniciacao:latest'
-          
+          sudo docker run --name api-iniciacao -d -p 5000:5000 fernandowi55/api-iniciacao:latest'
