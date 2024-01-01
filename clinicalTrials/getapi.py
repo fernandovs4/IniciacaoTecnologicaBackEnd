@@ -5,6 +5,10 @@ from pprint import pprint
 import time
 PATH = Path(__file__).parent 
 def todos_hospitais(cache = False, farmas = False):
+    
+    if cache:
+            with open(PATH / Path("json/cacheResults.json"), "r") as file:
+                return json.load(file)
     totalEstudos = 0
     expr = ["Neoplasms","Cancer","Tumors","Oncology"]
     LeadSponsorName = set()
@@ -24,9 +28,6 @@ def todos_hospitais(cache = False, farmas = False):
         
         url = "http://ClinicalTrials.gov/api/query/study_fields"
 
-        if cache:
-            with open(PATH / Path("json/cacheResults.json"), "r") as file:
-                return json.load(file)
 
     
         first_response = requests.get(url=url, params= query).json()

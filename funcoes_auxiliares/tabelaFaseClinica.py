@@ -13,10 +13,11 @@ def tabela_fase_clinica(estudos, inversed = False, simetric = False, sort_intern
         fases_por_clinica = {"Total": {"Total": 0 }, "fase 1":{"Total": 0}, "fase 2":{"Total":0}, "fase 3":{"Total":0}, "fase 4":{"Total":0}, "sem fase": {"Total":0}, "Nao aplicavel": {"Total": 0}}
    
     for estudo in estudos['estudos']:
+        apelidos_ = dict(json.loads(clinicas_)['hospitais']).items()
         if inversed:
             if estudo['Phase']== []:
                 for centro in estudo['LocationFacility']:
-                    for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                    for c, apelidos in apelidos_:
                         if centro in apelidos:
                             if c in fases_por_clinica["sem fase"]:
                                 fases_por_clinica["sem fase"][c] += 1
@@ -35,7 +36,7 @@ def tabela_fase_clinica(estudos, inversed = False, simetric = False, sort_intern
                            
             elif estudo['Phase'] == ['Not Applicable']:
                 for centro in estudo['LocationFacility']:
-                    for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                    for c, apelidos in apelidos_:
                         if centro in apelidos:
                             if c in fases_por_clinica["Nao aplicavel"]:
                                 fases_por_clinica["Nao aplicavel"][c] += 1
@@ -54,8 +55,10 @@ def tabela_fase_clinica(estudos, inversed = False, simetric = False, sort_intern
                            
             else:
                 for fase in estudo['Phase']:
+                    if len(estudo['Phase']) > 1:
+                        print(estudo['Phase'])
                     for centro in estudo['LocationFacility']:
-                        for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                        for c, apelidos in apelidos_:
                             if centro in apelidos:
                                 if c in fases_por_clinica[f"fase {fase.split(' ')[1]}"]:
                                     fases_por_clinica[f"fase {fase.split(' ')[1]}"][c] += 1
@@ -73,18 +76,16 @@ def tabela_fase_clinica(estudos, inversed = False, simetric = False, sort_intern
                                         fases_por_clinica["Total"][c] = 1
                                 
         else:
-
-
             if estudo['Phase']== []:
                 for centro in estudo['LocationFacility']:
-                    for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                    for c, apelidos in apelidos_:
                         if centro in apelidos:
                             fases_por_clinica[c]["sem fase"] += 1
                             fases_por_clinica[c]["Total"] += 1
                             fases_por_clinica["Total"]["sem fase"] += 1
             elif estudo['Phase'] == ['Not Applicable']:
                 for centro in estudo['LocationFacility']:
-                    for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                    for c, apelidos in apelidos_:
                         if centro in apelidos:
                             fases_por_clinica[c]["Nao aplicavel"] += 1
                             fases_por_clinica[c]["Total"] += 1
@@ -92,7 +93,7 @@ def tabela_fase_clinica(estudos, inversed = False, simetric = False, sort_intern
             else:
                 for fase in estudo['Phase']:
                     for centro in estudo['LocationFacility']:
-                        for c, apelidos in dict(json.loads(clinicas_)['hospitais']).items():
+                        for c, apelidos in apelidos_:
                             if centro in apelidos:
                                 fases_por_clinica[c][f"fase {fase.split(' ')[1]}"] += 1
                                 fases_por_clinica[c]["Total"] += 1

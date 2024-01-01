@@ -1,0 +1,219 @@
+{
+    "qtd_estudos": 1400,
+    "qtd_estudos_ac_camargo": 105,
+    "qtd_estudos_por_ano": {
+        "1991": 1,
+        "1997": 1,
+        "1998": 4,
+        "2000": 2,
+        "2001": 13,
+        "2002": 5,
+        "2003": 26,
+        "2004": 26,
+        "2005": 30,
+        "2006": 52,
+        "2007": 41,
+        "2008": 68,
+        "2009": 57,
+        "2010": 44,
+        "2011": 66,
+        "2012": 61,
+        "2013": 54,
+        "2014": 57,
+        "2015": 74,
+        "2016": 50,
+        "2017": 80,
+        "2018": 89,
+        "2019": 91,
+        "2020": 109,
+        "2021": 102,
+        "2022": 108,
+        "2023": 63,
+        "2024": 4
+    },
+    "tipos_estudos": {
+        "Completed": 668,
+        "Terminated": 118,
+        "Recruiting": 260,
+        "Withdrawn": 16,
+        "Approved for marketing": 11,
+        "Unknown status": 9,
+        "Suspended": 1,
+        "Active, not recruiting": 294,
+        "Not yet recruiting": 9,
+        "No longer available": 9,
+        "Enrolling by invitation": 4,
+        "Available": 1
+    },
+    "qtd_estudos_por_ano_por_clinica": {
+        "A.C. Camargo": {
+            "2003": 1,
+            "2004": 1,
+            "2005": 1,
+            "2006": 2,
+            "2007": 1,
+            "2008": 3,
+            "2009": 3,
+            "2010": 2,
+            "2011": 3,
+            "2012": 1,
+            "2013": 4,
+            "2014": 3,
+            "2015": 7,
+            "2016": 2,
+            "2017": 1,
+            "2018": 8,
+            "2019": 20,
+            "2020": 9,
+            "2021": 9,
+            "2022": 12,
+            "2023": 10,
+            "2024": 0
+        },
+        "Rio Preto": {
+            "2006": 1,
+            "2009": 1,
+            "2010": 2,
+            "2011": 1,
+            "2012": 2,
+            "2013": 10,
+            "2014": 3,
+            "2015": 13,
+            "2016": 7,
+            "2017": 14,
+            "2018": 9,
+            "2019": 12,
+            "2020": 17,
+            "2021": 17,
+            "2022": 13,
+            "2023": 9,
+            "2003": 0,
+            "2004": 0,
+            "2005": 0,
+            "2007": 0,
+            "2008": 0,
+            "2024": 0
+        },
+        "S\u00edrio Liban\u00eas": {
+            "2004": 2,
+            "2007": 3,
+            "2008": 1,
+            "2011": 2,
+            "2012": 3,
+            "2013": 4,
+            "2014": 4,
+            "2015": 5,
+            "2016": 4,
+            "2017": 2,
+            "2018": 9,
+            "2019": 9,
+            "2020": 13,
+            "2021": 8,
+            "2022": 12,
+            "2023": 5,
+            "2024": 1,
+            "2003": 0,
+            "2005": 0,
+            "2006": 0,
+            "2009": 0,
+            "2010": 0
+        }
+    },
+    "tipos_estudo_ac_camargo": {
+        "Rio Preto": {
+            "Recruiting": 33,
+            "Completed": 38,
+            "Active, not recruiting": 39,
+            "Terminated": 15,
+            "Withdrawn": 3,
+            "Unknown status": 2,
+            "Enrolling by invitation": 1
+        },
+        "S\u00edrio Liban\u00eas": {
+            "Completed": 30,
+            "Approved for marketing": 1,
+            "Active, not recruiting": 22,
+            "Recruiting": 26,
+            "Not yet recruiting": 1,
+            "Withdrawn": 1,
+            "No longer available": 1,
+            "Unknown status": 2,
+            "Terminated": 7
+        },
+        "Ara\u00fajo Jorge": {
+            "Completed": 20,
+            "Active, not recruiting": 22,
+            "Recruiting": 13,
+            "Terminated": 2
+        },
+        "A.C. Camargo": {
+            "Completed": 33,
+            "Active, not recruiting": 29,
+            "Recruiting": 31,
+            "Terminated": 7,
+            "Withdrawn": 3,
+            "No longer available": 2
+        },
+        "Beneficencia": {
+            "Completed": 6,
+            "Recruiting": 28,
+            "Active, not recruiting": 23,
+            "Terminated": 3
+        },
+        "Ijui": {
+            "Completed": 35,
+            "Recruiting": 5,
+            "Terminated": 6,
+            "Active, not recruiting": 27,
+            "Withdrawn": 3
+        },
+        "M\u00e3e de Deus": {
+            "Active, not recruiting": 12,
+            "Terminated": 10,
+            "Completed": 28,
+            "Recruiting": 15,
+            "Withdrawn": 2,
+            "No longer available": 1
+        },
+        "Albert Einstein": {
+            "Completed": 20,
+            "Active, not recruiting": 12,
+            "Recruiting": 10,
+            "Terminated": 3,
+            "No longer available": 1,
+            "Withdrawn": 1
+        },
+        "Oswaldo Cruz": {
+            "Completed": 17,
+            "Terminated": 4,
+            "Recruiting": 10,
+            "Active, not recruiting": 9
+        },
+        "Rede D`or": {
+            "Recruiting": 1,
+            "Active, not recruiting": 3,
+            "Completed": 1
+        },
+        "HCPA": {
+            "Recruiting": 7,
+            "Completed": 4,
+            "Active, not recruiting": 5,
+            "Unknown status": 2,
+            "Terminated": 1
+        },
+        "Unicamp": {
+            "Active, not recruiting": 9,
+            "Terminated": 6,
+            "Recruiting": 10,
+            "Withdrawn": 3,
+            "Completed": 13,
+            "Enrolling by invitation": 1
+        },
+        "Hospital do Cora\u00e7\u00e3o": {
+            "Completed": 3,
+            "Active, not recruiting": 2,
+            "Terminated": 1,
+            "Recruiting": 1
+        }
+    }
+}
