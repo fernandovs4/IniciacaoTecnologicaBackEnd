@@ -276,6 +276,7 @@ class EstudosResource(Resource):
                                             dados[fharma][hospital] += 1
                                 else:
                                     dados[fharma] = {}
+                                    
                                     if foi:
                                         dados[fharma][hospital] = 1
                     else:
