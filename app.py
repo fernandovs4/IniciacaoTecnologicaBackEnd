@@ -31,6 +31,110 @@ def constroi_tabela(data = False,  fase=False, idade_min=False, idade_max=False,
   
     return dadosTabela
 
+def dashboard(cache):
+    estudos = todos_hospitais(cache)
+    qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound'] 
+    qtd_estudos_por_ano = {}
+    qtd_estudos_ac_camargo = 0
+    tipos_de_estudos = {}
+    tipos_de_estudos_ac_camargo = {}
+    qtd_estudos_por_ano_por_clinica = {}
+    for estudo in estudos['StudyFieldsResponse']['StudyFields']:
+        try:
+            if estudo['OverallStatus'][0] not in tipos_de_estudos:
+                tipos_de_estudos[estudo['OverallStatus'][0]] = 1
+                h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
+                h = json.loads(h)
+                for clinica in estudo['LocationFacility']:
+                    for c, apelidos in h['hospitais'].items():
+                        if clinica in apelidos:
+                            if c not in tipos_de_estudos_ac_camargo:
+                                tipos_de_estudos_ac_camargo[c] = {}
+                                tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                            else:
+                                if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                else:
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
+                            if c == "A.C. Camargo":
+                                qtd_estudos_ac_camargo += 1
+            else:
+                tipos_de_estudos[estudo['OverallStatus'][0]] += 1
+                h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
+                h = json.loads(h)
+                for clinica in estudo['LocationFacility']:
+                    for c, apelidos in h['hospitais'].items():
+                        if clinica in apelidos:
+                            if c not in tipos_de_estudos_ac_camargo:
+                                tipos_de_estudos_ac_camargo[c] = {}
+                                tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                            else:
+                                if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
+                                else:
+                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
+                            if c == "A.C. Camargo":
+                                qtd_estudos_ac_camargo += 1
+            data = estudo['StartDate'][0]
+            data = convert_month_year_to_dd_mm_yyyy(data)[6:]
+            locationFacility = estudo['LocationFacility']
+            hospitais = abre_hospital_json_r()['hospitais']
+            
+            
+            for clinica in locationFacility:
+                
+                for c, apelidos in hospitais.items():
+                    
+                    if clinica in apelidos:
+                        
+                        if c in qtd_estudos_por_ano_por_clinica:
+                            
+                            if data in qtd_estudos_por_ano_por_clinica[c]:
+                                qtd_estudos_por_ano_por_clinica[c][data] += 1
+                            else:
+                                qtd_estudos_por_ano_por_clinica[c][data] = 1
+                        else:
+                            qtd_estudos_por_ano_por_clinica[c] = {}
+                            qtd_estudos_por_ano_por_clinica[c][data] = 1
+
+            
+            if data in qtd_estudos_por_ano:
+                qtd_estudos_por_ano[data] += 1
+            else:
+                qtd_estudos_por_ano[data] = 1
+        except:
+            continue
+    novo_dici = {}
+    for hospitais, valores in qtd_estudos_por_ano_por_clinica.items():
+        
+        if hospitais == "A.C. Camargo" or hospitais == "Sírio Libanês" or hospitais == "Rio Preto":
+            novo_dici[hospitais] = valores
+    qtd_estudos_por_ano_por_clinica = novo_dici 
+    qtd_estudos_por_ano = dict(sorted(qtd_estudos_por_ano.items(), key=lambda item: item[0]))
+
+    dados_formatados = constroi_tabela()
+
+    
+    qtd_estudos_por_ano_por_clinica = OrderedDict(sorted(qtd_estudos_por_ano_por_clinica.items()))
+
+
+# Exibe os dados ordenados
+    for clinica, valores in qtd_estudos_por_ano_por_clinica.items():
+        qtd_estudos_por_ano_por_clinica[clinica] = OrderedDict(sorted(valores.items()))
+    
+    qtd_estudos_por_ano_por_clinica = reajustaDatas(qtd_estudos_por_ano_por_clinica)
+    
+    with open(PATH / "jsons/cacheDashboard.json", 'w') as f:
+        json.dump( {"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": qtd_estudos_por_ano_por_clinica, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, f, indent=4 )
+    
+    
+    return Response(json.dumps({"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": qtd_estudos_por_ano_por_clinica, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
+
+class atualizacao(Resource):
+    def get(self):
+        dashboard(cache=False)
+
+
 
 class ConstruirTabelaResource(Resource):
     def get(self):
@@ -123,9 +227,7 @@ class ConstruirTabelaResource(Resource):
             dados_formatados = tabela_fase_farma(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-        # if  not datafinal and not  datainicial:
-        #     with open(PATH / Path('jsons/cacheTabela.json'), 'w') as arquivo:
-        #         json.dump(dados_formatados, arquivo, indent=4)
+
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
 
@@ -137,15 +239,6 @@ class EstudosResource(Resource):
             datainicial = request.args['datainicial']
         if request.args.get('datafinal') is not None:
             datafinal = request.args['datafinal']
-        
-        # if request.args.get('cache') is not None:
-        #     if request.args['cache'] == 'true':
-        #         tabelaCache = open(PATH / Path('jsons/cacheTabela.json'), 'r').read()
-
-        #         tabelaCache = json.loads(tabelaCache)
-                
-        #         return Response(json.dumps(tabelaCache, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
-
 
         dados = {}
         hospitais = todos_hospitais(cache=True)
@@ -346,111 +439,8 @@ class  Dashboard(Resource):
             with open(PATH / "jsons/cacheDashboard.json", 'r') as f:
                 return  Response(json.dumps(json.load(f), ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
     
-
-        estudos = todos_hospitais(cache=True)
-        qtd_estudos = estudos['StudyFieldsResponse']['NStudiesFound'] 
-        qtd_estudos_por_ano = {}
-        qtd_estudos_ac_camargo = 0
-        tipos_de_estudos = {}
-        tipos_de_estudos_ac_camargo = {}
-        qtd_estudos_por_ano_por_clinica = {}
-        for estudo in estudos['StudyFieldsResponse']['StudyFields']:
-            try:
-                if estudo['OverallStatus'][0] not in tipos_de_estudos:
-                    tipos_de_estudos[estudo['OverallStatus'][0]] = 1
-                    h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
-                    h = json.loads(h)
-                    for clinica in estudo['LocationFacility']:
-                        for c, apelidos in h['hospitais'].items():
-                            if clinica in apelidos:
-                                if c not in tipos_de_estudos_ac_camargo:
-                                    tipos_de_estudos_ac_camargo[c] = {}
-                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
-                                else:
-                                    if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
-                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
-                                    else:
-                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
-                                if c == "A.C. Camargo":
-                                    qtd_estudos_ac_camargo += 1
-                else:
-                    tipos_de_estudos[estudo['OverallStatus'][0]] += 1
-                    h = open(PATH / Path('jsons/hospitais.json' ),'r').read()
-                    h = json.loads(h)
-                    for clinica in estudo['LocationFacility']:
-                        for c, apelidos in h['hospitais'].items():
-                            if clinica in apelidos:
-                                if c not in tipos_de_estudos_ac_camargo:
-                                    tipos_de_estudos_ac_camargo[c] = {}
-                                    tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
-                                else:
-                                    if estudo['OverallStatus'][0] not in tipos_de_estudos_ac_camargo[c]:
-                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] = 1
-                                    else:
-                                        tipos_de_estudos_ac_camargo[c][estudo['OverallStatus'][0]] += 1
-                                if c == "A.C. Camargo":
-                                    qtd_estudos_ac_camargo += 1
-                data = estudo['StartDate'][0]
-                data = convert_month_year_to_dd_mm_yyyy(data)[6:]
-                locationFacility = estudo['LocationFacility']
-                hospitais = abre_hospital_json_r()['hospitais']
-                
-               
-                for clinica in locationFacility:
-                  
-                    for c, apelidos in hospitais.items():
-                        
-                        if clinica in apelidos:
-                          
-                            if c in qtd_estudos_por_ano_por_clinica:
-                              
-                                if data in qtd_estudos_por_ano_por_clinica[c]:
-                                    qtd_estudos_por_ano_por_clinica[c][data] += 1
-                                else:
-                                    qtd_estudos_por_ano_por_clinica[c][data] = 1
-                            else:
-                                qtd_estudos_por_ano_por_clinica[c] = {}
-                                qtd_estudos_por_ano_por_clinica[c][data] = 1
-
-               
-                if data in qtd_estudos_por_ano:
-                    qtd_estudos_por_ano[data] += 1
-                else:
-                    qtd_estudos_por_ano[data] = 1
-            except:
-                continue
-        novo_dici = {}
-        for hospitais, valores in qtd_estudos_por_ano_por_clinica.items():
-           
-            if hospitais == "A.C. Camargo" or hospitais == "Sírio Libanês" or hospitais == "Rio Preto":
-                novo_dici[hospitais] = valores
-        qtd_estudos_por_ano_por_clinica = novo_dici 
-        qtd_estudos_por_ano = dict(sorted(qtd_estudos_por_ano.items(), key=lambda item: item[0]))
-
-        dados_formatados = constroi_tabela()
-        # tabela_fase_clinic = tabela_fase_clinica(dados_formatados)
-        # tabela_fase_farm = tabela_fase_farma(dados_formatados)
-        # tabela_fase_condica = tabela_fase_condicao(dados_formatados)
-        # ordenar as datas do dicionario de qtd_estudos_por_ano_por_clinica
-
+        return dashboard(cache = True)
         
-# Ordena as datas e cria um OrderedDict
-        
-        qtd_estudos_por_ano_por_clinica = OrderedDict(sorted(qtd_estudos_por_ano_por_clinica.items()))
-
-
-    # Exibe os dados ordenados
-        for clinica, valores in qtd_estudos_por_ano_por_clinica.items():
-            qtd_estudos_por_ano_por_clinica[clinica] = OrderedDict(sorted(valores.items()))
-        
-        qtd_estudos_por_ano_por_clinica = reajustaDatas(qtd_estudos_por_ano_por_clinica)
-     
-        with open(PATH / "jsons/cacheDashboard.json", 'w') as f:
-            json.dump( {"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": qtd_estudos_por_ano_por_clinica, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, f, indent=4 )
-       
-      
-        return Response(json.dumps({"qtd_estudos": qtd_estudos,"qtd_estudos_ac_camargo": qtd_estudos_ac_camargo, "qtd_estudos_por_ano": qtd_estudos_por_ano , "tipos_estudos": tipos_de_estudos, "qtd_estudos_por_ano_por_clinica": qtd_estudos_por_ano_por_clinica, "tipos_estudo_ac_camargo": tipos_de_estudos_ac_camargo }, ensure_ascii=False).encode('utf8'), mimetype='application/json', status=200)
-    
 api.add_resource(Dashboard, '/dashboard')
 api.add_resource(EstudosResource, '/estudos')
 api.add_resource(HospitaisResource, '/hospitais')
