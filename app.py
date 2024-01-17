@@ -136,7 +136,7 @@ class atualizacao(Resource):
 
 
 
-class ConstruirTabelaResource(Resource):
+class TabelaResource(Resource):
     def get(self):
         datainicial = False
         datafinal = False
@@ -276,7 +276,7 @@ class EstudosResource(Resource):
                                             dados[fharma][hospital] += 1
                                 else:
                                     dados[fharma] = {}
-                                    
+
                                     if foi:
                                         dados[fharma][hospital] = 1
                     else:
@@ -449,6 +449,6 @@ api.add_resource(ApelidosResource, '/apelidos')
 api.add_resource(NovoNomeHospitalResource, '/cadastros/hospitais')
 api.add_resource(TodosEstudosResource, '/todosEstudos')
 api.add_resource(FarmasResource, '/farmas')
-api.add_resource(ConstruirTabelaResource, '/construirTabela')
+api.add_resource(TabelaResource, '/tabela')
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
