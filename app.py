@@ -25,9 +25,9 @@ CORS(app)
 PATH =  Path(__file__).parent.absolute()
 
 def constroi_tabela(data = False,  fase=False, idade_min=False, idade_max=False,  status=False,gender=False, stdAge=False):
-    dadosTabela = {'estudos':[]}
+   
     dados = todos_hospitais(cache=True)
-    dadosTabela = filtraDados(dadosTabela, dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
+    dadosTabela = filtraDados(dados['StudyFieldsResponse']['StudyFields'], data, fase, idade_min, idade_max,status, gender, stdAge)
   
     return dadosTabela
 
@@ -153,6 +153,8 @@ class TabelaResource(Resource):
         sort_externo = False
         total_externo = False
         total_interno = False
+        linhas_selecionadas = []
+        colunas_selecionadas = []
 
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
@@ -227,9 +229,78 @@ class TabelaResource(Resource):
             dados_formatados = tabela_fase_farma(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
         if dados_formatados == {}:
             return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+        if request.args.get("linhas-selecionadas"):
+            linhas_selecionadas = request.args.get("linhas-selecionadas").split(',')
+        if request.args.get("colunas-selecionadas"):
+            colunas_selecionadas = request.args.get("colunas-selecionadas").split(',')
+        if colunas_selecionadas == ['todas'] and linhas_selecionadas == ['todas']:
+            return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+        dados_formatados = filtra_por_linhas_colunas(estudos, inversed, linhas_selecionadas, colunas_selecionadas)
+
+        
 
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
+def filtra_por_linhas_colunas(estudos, inversed, linhas_selecionadas, colunas_selecionadas):
+    if inversed:
+        if linhas_selecionadas == ['todas'] and colunas_selecionadas != ['todas']:
+            #colunas são os dados de dentro
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                novo_dicionario[estudo[0]] = {}
+                for estudo_interno in estudo[1].items():
+                    if estudo_interno[0] in colunas_selecionadas:
+                        novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            
+            return novo_dicionario 
+        if linhas_selecionadas != ['todas'] and colunas_selecionadas == ['todas']:
+            #linhas são as de fora 
+            pass 
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                if estudo[0] in linhas_selecionadas:
+                    novo_dicionario[estudo[0]] = estudo[1]
+            return novo_dicionario
+        
+        if linhas_selecionadas != ['todas'] and colunas_selecionadas != ['todas']:
+            pass 
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                if estudo[0] in linhas_selecionadas:
+                    novo_dicionario[estudo[0]] = {}
+                    for estudo_interno in estudo[1].items():
+                        if estudo_interno[0] in colunas_selecionadas:
+                            novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            return novo_dicionario
+    else:
+        if linhas_selecionadas == ['todas'] and colunas_selecionadas != ['todas']:
+            #colunas são os dados de fora
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                if estudo[0] in colunas_selecionadas:
+                    novo_dicionario[estudo[0]] = estudo[1]
+            return novo_dicionario
+            
+        if linhas_selecionadas != ['todas'] and colunas_selecionadas == ['todas']:
+            #linhas são os dados de dentro
+            pass 
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                novo_dicionario[estudo[0]] = {}
+                for estudo_interno in estudo[1].items():
+                    if estudo_interno[0] in linhas_selecionadas:
+                        novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            
+            return novo_dicionario 
+        if linhas_selecionadas != ['todas'] and colunas_selecionadas != ['todas']:
+            novo_dicionario = {}
+            for estudo in estudos.items():
+                if estudo[0] in colunas_selecionadas:
+                    novo_dicionario[estudo[0]] = {}
+                    for estudo_interno in estudo[1].items():
+                        if estudo_interno[0] in linhas_selecionadas:
+                            novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            return novo_dicionario
 
 class EstudosResource(Resource):
     def get(self):
