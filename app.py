@@ -18,6 +18,7 @@ from funcoes_auxiliares.tabelaFaseCondicao import tabela_fase_condicao
 from funcoes_auxiliares.tabelaFaseFarma import tabela_fase_farma
 from funcoes_auxiliares.reajustaDatas import reajustaDatas
 from collections import OrderedDict
+import copy
 app = Flask(__name__)
 api = Api(app)
 
@@ -153,8 +154,8 @@ class TabelaResource(Resource):
         sort_externo = False
         total_externo = False
         total_interno = False
-        linhas_selecionadas = []
-        colunas_selecionadas = []
+        linhas_selecionadas = None
+        colunas_selecionadas = None
 
         if request.args.get('datainicial') is not None:
             datainicial = request.args['datainicial']
@@ -227,79 +228,101 @@ class TabelaResource(Resource):
             dados_formatados = tabela_fase_condicao(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
         elif tipo == 'fase_farma' or tipo == 'farma_fase':
             dados_formatados = tabela_fase_farma(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
-        if dados_formatados == {}:
-            return Response(json.dumps({"status":"Nenhum estudo encontrado"}, ensure_ascii=False).encode('utf8'), mimetype='application/json')
         if request.args.get("linhas-selecionadas"):
             linhas_selecionadas = request.args.get("linhas-selecionadas").split(',')
         if request.args.get("colunas-selecionadas"):
             colunas_selecionadas = request.args.get("colunas-selecionadas").split(',')
-        if colunas_selecionadas == ['todas'] and linhas_selecionadas == ['todas']:
+
+        if colunas_selecionadas == None and linhas_selecionadas == None:
             return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-        dados_formatados = filtra_por_linhas_colunas(estudos, inversed, linhas_selecionadas, colunas_selecionadas)
-
-        
-
+        print(colunas_selecionadas)
+        dados_formatados = filtra_por_linhas_colunas(dados_formatados, inversed, linhas_selecionadas, colunas_selecionadas)
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+
+def calcula_total(tabela):
+    copia_tabela = copy.deepcopy(tabela)
+    tabela["Total"] = {}
+    for item in copia_tabela.items():
+        for item2 in item[1].items():
+            if item2[0] not in tabela['Total']:
+                tabela['Total'][item2[0]] = item2[1]
+            else:
+                tabela['Total'][item2[0]] += item2[1]
+        tabela[item[0]]["Total"] = sum(list(item[1].values()))
+    if "Total" in tabela['Total']:
+        del tabela['Total']['Total']
+
+    tabela['Total']['Total'] = sum(list(tabela['Total'].values()))
+    return tabela
 
 def filtra_por_linhas_colunas(estudos, inversed, linhas_selecionadas, colunas_selecionadas):
     if inversed:
-        if linhas_selecionadas == ['todas'] and colunas_selecionadas != ['todas']:
+        if linhas_selecionadas == None and colunas_selecionadas != None:
             #colunas são os dados de dentro
             novo_dicionario = {}
             for estudo in estudos.items():
                 novo_dicionario[estudo[0]] = {}
+               
                 for estudo_interno in estudo[1].items():
+                    
                     if estudo_interno[0] in colunas_selecionadas:
                         novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
-            
+            novo_dicionario = calcula_total(novo_dicionario)
             return novo_dicionario 
-        if linhas_selecionadas != ['todas'] and colunas_selecionadas == ['todas']:
+        if linhas_selecionadas != None and colunas_selecionadas == None:
             #linhas são as de fora 
             pass 
             novo_dicionario = {}
             for estudo in estudos.items():
                 if estudo[0] in linhas_selecionadas:
                     novo_dicionario[estudo[0]] = estudo[1]
+            novo_dicionario = calcula_total(novo_dicionario)
             return novo_dicionario
         
-        if linhas_selecionadas != ['todas'] and colunas_selecionadas != ['todas']:
-            pass 
+        if linhas_selecionadas != None and colunas_selecionadas != None:
             novo_dicionario = {}
             for estudo in estudos.items():
                 if estudo[0] in linhas_selecionadas:
                     novo_dicionario[estudo[0]] = {}
+                  
                     for estudo_interno in estudo[1].items():
                         if estudo_interno[0] in colunas_selecionadas:
                             novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            novo_dicionario = calcula_total(novo_dicionario)
             return novo_dicionario
     else:
-        if linhas_selecionadas == ['todas'] and colunas_selecionadas != ['todas']:
+        if linhas_selecionadas == None and colunas_selecionadas != None:
             #colunas são os dados de fora
             novo_dicionario = {}
             for estudo in estudos.items():
-                if estudo[0] in colunas_selecionadas:
-                    novo_dicionario[estudo[0]] = estudo[1]
+                novo_dicionario[estudo[0]]  = {}
+                for estudo_interno in estudo[1].items():
+                     if estudo_interno[0] in colunas_selecionadas:
+                        novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            novo_dicionario = calcula_total(novo_dicionario)
             return novo_dicionario
             
-        if linhas_selecionadas != ['todas'] and colunas_selecionadas == ['todas']:
+        if linhas_selecionadas != None and colunas_selecionadas == None:
             #linhas são os dados de dentro
             pass 
             novo_dicionario = {}
             for estudo in estudos.items():
-                novo_dicionario[estudo[0]] = {}
-                for estudo_interno in estudo[1].items():
-                    if estudo_interno[0] in linhas_selecionadas:
-                        novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+                if estudo[0] in linhas_selecionadas:
+                    novo_dicionario[estudo[0]] = estudo[1]
+            novo_dicionario = calcula_total(novo_dicionario)
+            return novo_dicionario
             
-            return novo_dicionario 
-        if linhas_selecionadas != ['todas'] and colunas_selecionadas != ['todas']:
+        if linhas_selecionadas != None and colunas_selecionadas != None:
             novo_dicionario = {}
             for estudo in estudos.items():
-                if estudo[0] in colunas_selecionadas:
+                if estudo[0] in linhas_selecionadas:
                     novo_dicionario[estudo[0]] = {}
+                    
+
                     for estudo_interno in estudo[1].items():
-                        if estudo_interno[0] in linhas_selecionadas:
+                        if estudo_interno[0] in colunas_selecionadas:
                             novo_dicionario[estudo[0]][estudo_interno[0]] = estudo_interno[1]
+            novo_dicionario = calcula_total(novo_dicionario)
             return novo_dicionario
 
 class EstudosResource(Resource):
