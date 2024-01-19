@@ -18,6 +18,7 @@ from funcoes_auxiliares.tabelaFaseCondicao import tabela_fase_condicao
 from funcoes_auxiliares.tabelaFaseFarma import tabela_fase_farma
 from funcoes_auxiliares.reajustaDatas import reajustaDatas
 from collections import OrderedDict
+import urllib.parse
 import copy
 app = Flask(__name__)
 api = Api(app)
@@ -229,13 +230,15 @@ class TabelaResource(Resource):
         elif tipo == 'fase_farma' or tipo == 'farma_fase':
             dados_formatados = tabela_fase_farma(estudos, inversed=inversed, simetric=simetric, sort_interno=sort_interno, sort_externo=sort_externo, total_interno=total_interno, total_externo=total_externo)
         if request.args.get("linhas-selecionadas"):
-            linhas_selecionadas = request.args.get("linhas-selecionadas").split(',')
+            linhas_selecionadas = urllib.parse.unquote(request.args.get("linhas-selecionadas")).split(',')
+            linhas_selecionadas = [x.replace('$', ',') for x in linhas_selecionadas]
+
         if request.args.get("colunas-selecionadas"):
-            colunas_selecionadas = request.args.get("colunas-selecionadas").split(',')
+            colunas_selecionadas = urllib.parse.unquote(request.args.get("colunas-selecionadas")).split(',')
+            colunas_selecionadas = [x.replace('$', ',') for x in colunas_selecionadas]
 
         if colunas_selecionadas == None and linhas_selecionadas == None:
             return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-        print(colunas_selecionadas)
         dados_formatados = filtra_por_linhas_colunas(dados_formatados, inversed, linhas_selecionadas, colunas_selecionadas)
         return Response(json.dumps(dados_formatados, ensure_ascii=False).encode('utf8'), mimetype='application/json')
 
